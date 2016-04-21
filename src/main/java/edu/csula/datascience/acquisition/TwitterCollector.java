@@ -5,14 +5,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import twitter4j.Status;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * An example of Collector implementation using Twitter4j with MongoDB Java driver
- */
 public class TwitterCollector implements Collector<Status, Status> {
     MongoClient mongoClient;
     MongoDatabase database;
@@ -20,8 +16,8 @@ public class TwitterCollector implements Collector<Status, Status> {
     public TwitterCollector() {
         // establish database connection to MongoDB
         mongoClient = new MongoClient();
-        // select `bd-example` as testing database
-        database = mongoClient.getDatabase("bd-example");
+
+        database = mongoClient.getDatabase("movie-data");
 
         // select collection by name `tweets`
         collection = database.getCollection("tweets");
