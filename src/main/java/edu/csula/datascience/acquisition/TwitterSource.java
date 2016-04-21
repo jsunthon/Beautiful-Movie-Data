@@ -62,9 +62,6 @@ public class TwitterSource implements Source<Status> {
 
 				List<Status> tweets = result.getTweets();
 				for (Status tweet : tweets) {
-					
-					//get the text value of the tweet, just to compare with what is stored in db.
-					System.out.println(tweet.getText());
 					minId = Math.min(minId, tweet.getId());
 				}
 				list.addAll(tweets);
