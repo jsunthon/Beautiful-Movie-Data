@@ -1,7 +1,6 @@
 package edu.csula.datascience.acquisition;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +12,7 @@ public class CsvSource implements Source<String>{
     private final String DELIMITER = ",";
     private String line;
 
-    public CsvSource(File file){
+    public CsvSource(String file){
         try {
             fileReader = new BufferedReader(new FileReader(file));
         }catch (Exception e){
