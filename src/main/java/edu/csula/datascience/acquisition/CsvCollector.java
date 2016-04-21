@@ -18,7 +18,7 @@ public class CsvCollector implements Collector<String, String>{
 
         database = mongoClient.getDatabase("movie-data");
 
-        // select collection by name `tweets`
+        // select collection by name `csv_files`
         collection = database.getCollection("csv_files");
     }
 
