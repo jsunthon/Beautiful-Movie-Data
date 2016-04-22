@@ -1,13 +1,17 @@
 package edu.csula.datascience.acquisition;
 
+import com.google.common.collect.Lists;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
 
 import org.bson.Document;
+
+import twitter4j.JSONObject;
 import twitter4j.Status;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +19,8 @@ public class TwitterCollector implements Collector<Status, Status> {
     MongoClient mongoClient;
     MongoDatabase database;
     MongoCollection<Document> collection;
+    
+    Collection<Status> cleanStatus;
     public TwitterCollector() {
         // establish database connection to MongoDB
         mongoClient = new MongoClient();
@@ -37,7 +43,33 @@ public class TwitterCollector implements Collector<Status, Status> {
 //    	}
 //    	
 //        return finalSrc;
-    	return src;
+    	
+    	List<Status> listOfStatus = Lists.newArrayList();
+    	for(Status srcStatus: src)
+    	{
+    		listOfStatus.add(srcStatus); 
+    	}
+    	for(Status status: listOfStatus)
+    	{
+    		System.out.println("removed"+status); //just to check on the console
+    		listOfStatus.remove(status);
+    		for(Status statusCompare: listOfStatus)	
+    		{
+    			
+    			if(statusCompare.getUser().getName().equals(status.getUser().getName()))
+    			if(statusCompare.getText().equals(status.getText()))
+    			{
+    					
+    			}
+    			else
+    			{
+    				cleanStatus.add(statusCompare);
+    			}
+    				
+    		}
+    	}	
+    	   	
+    	return cleanStatus;
     }
 
     /**
