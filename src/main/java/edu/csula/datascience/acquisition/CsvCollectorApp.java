@@ -12,10 +12,9 @@ public class CsvCollectorApp {
         CsvSource source = new CsvSource(file);
         CsvCollector collector = new CsvCollector();
 
-
         while (source.hasNext()){
-            Collection<String> movies = source.next();
-            Collection<String> mungedMovies = collector.mungee(movies);
+            Collection<Movie> movies = source.next();
+            Collection<Movie> mungedMovies = collector.mungee(movies);
             collector.save(mungedMovies);
         }
 
