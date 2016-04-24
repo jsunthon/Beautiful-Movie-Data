@@ -6,17 +6,17 @@ public class TwitterResponse {
 	private int retwtCt;
 	private String userName;
 	private String text;
-	private String lang;
+	private String date;
 	private String source;
 
-	public TwitterResponse(long id, int favCt, int retwtCt, String userName, String text, String lang, String source) {
+	public TwitterResponse(long id, int favCt, int retwtCt, String userName, String text, String date, String source) {
 		super();
 		this.id = id;
 		this.favCt = favCt;
 		this.retwtCt = retwtCt;
 		this.userName = userName;
 		this.text = text;
-		this.lang = lang;
+		this.date = date;
 		this.source = source;
 	}
 
@@ -55,11 +55,12 @@ public class TwitterResponse {
 		return text;
 	}
 
+
 	/**
-	 * @return the lang
+	 * @return the date
 	 */
-	public String getLang() {
-		return lang;
+	public String getDate() {
+		return date;
 	}
 
 	/**

@@ -42,11 +42,14 @@ public class TwitterCollector implements Collector<TwitterResponse, TwitterRespo
 
 	@Override
 	public void save(Collection<TwitterResponse> data) {
-		System.out.print("Data size in saved method" + data.size());
+		
+		if (data.size() == 0 || data == null) return;
+		
+		System.out.println("Data size in saved method" + data.size());
 		List<Document> documents = data.stream()
 				.map(item -> new Document().append("tweetId", item.getId()).append("favCt", item.getFavCt())
 						.append("retwtCt", item.getRetwtCt()).append("username", item.getUserName())
-						.append("text", item.getText()).append("lang", item.getLang())
+						.append("text", item.getText()).append("date", item.getDate())
 						.append("source", item.getSource()))
 				.collect(Collectors.toList());
 
