@@ -3,6 +3,9 @@ package edu.csula.datascience.acquisition.csv;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
+import edu.csula.datascience.acquisition.Movie;
+
 import org.bson.Document;
 
 import java.util.ArrayList;

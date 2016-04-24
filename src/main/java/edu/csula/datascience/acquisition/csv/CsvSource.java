@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import edu.csula.datascience.acquisition.Movie;
+
 
 public class CsvSource implements Source<Movie>{
     private BufferedReader br1, br2;
