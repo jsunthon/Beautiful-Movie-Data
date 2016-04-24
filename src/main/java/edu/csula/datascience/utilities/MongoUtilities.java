@@ -1,17 +1,10 @@
 package edu.csula.datascience.utilities;
 
-import com.google.common.collect.Lists;
-import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import java.util.List;
-import java.util.Random;
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Projections.excludeId;
-import static com.mongodb.client.model.Sorts.descending;
 
 public class MongoUtilities {
 	private MongoClient mongoClient;
