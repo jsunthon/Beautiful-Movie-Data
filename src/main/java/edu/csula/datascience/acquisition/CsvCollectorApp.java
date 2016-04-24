@@ -4,6 +4,8 @@ package edu.csula.datascience.acquisition;
 import edu.csula.datascience.utilities.MongoUtilities;
 
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CsvCollectorApp {
     public static void main(String[] args){

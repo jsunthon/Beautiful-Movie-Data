@@ -8,6 +8,8 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -30,19 +32,25 @@ public class CsvCollector implements Collector<Movie, Movie>{
         ArrayList<Movie> srcArray = new ArrayList(src);
         ArrayList<Movie> finalMovieEntry = new ArrayList();
         double averageRating = 0.0;
-        String title = "";
-        int mid = 0;
-        Movie theMovie = new Movie();
+        String title = srcArray.get(0).getTitle();
+        int year = 0;
+
+        //regex found on stackoverflow
+        Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(title);
+        while(m.find()) {
+            year = Integer.parseInt(m.group(1));
+            title = title.replaceAll("\\(.*?\\) ?", "");
+        }
+
+        Movie theMovie = new Movie(srcArray.get(0).getId(), title);
         for (Movie movie : srcArray){
-            mid = movie.getId();
-            title = movie.getTitle();
             averageRating += movie.getRating();
         }
         averageRating =  averageRating/(double)src.size();
-        theMovie.setId(mid);
-        theMovie.setTitle(title);
         theMovie.setRating(averageRating);
+        theMovie.setYear(year);
         finalMovieEntry.add(theMovie);
+
         return finalMovieEntry;
     }
 
@@ -51,10 +59,17 @@ public class CsvCollector implements Collector<Movie, Movie>{
                 .map(item -> new Document()
                         .append("movieID", item.getId())
                         .append("title", item.getTitle())
-                        .append("rating", item.getRating()))
+                        .append("rating", item.getRating())
+                        .append("year", item.getYear()))
                 .collect(Collectors.toList());
 
         collection.insertMany(documents);
 
+    }
+
+    private boolean isValidTitle(String title){
+        boolean valid = true;
+        valid = title.matches("\\w+");
+        return valid;
     }
 }

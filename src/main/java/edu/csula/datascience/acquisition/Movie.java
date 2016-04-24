@@ -1,7 +1,7 @@
 package edu.csula.datascience.acquisition;
 
 public class Movie {
-    private int id;
+    private int id, year;
     private String title, hashtagTitle;
     private double rating;
 
@@ -45,6 +45,14 @@ public class Movie {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public int getYear(){
+        return year;
+    }
+
+    public void setYear(int year){
+        this.year = year;
     }
 
 
