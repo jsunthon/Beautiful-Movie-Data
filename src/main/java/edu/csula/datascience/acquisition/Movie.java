@@ -1,7 +1,7 @@
 package edu.csula.datascience.acquisition;
 
 public class Movie {
-    private int id;
+    private int id, year;
     private String title, hashtagTitle;
     private double rating;
 
@@ -28,6 +28,7 @@ public class Movie {
 
     public void setTitle(String title) {
         this.title = title;
+        hashtagTitle = "#" + title.replaceAll("\\s","");
     }
 
     public String getHashtagTitle() {
@@ -46,12 +47,13 @@ public class Movie {
         this.rating = rating;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Movie)) return false;
-
-        Movie movie = (Movie) o;
-        return getId() == movie.getId();
+    public int getYear(){
+        return year;
     }
+
+    public void setYear(int year){
+        this.year = year;
+    }
+
+
 }
