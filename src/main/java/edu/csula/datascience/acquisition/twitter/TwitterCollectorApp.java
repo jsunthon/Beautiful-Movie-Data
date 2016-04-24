@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class TwitterCollectorApp {
     public static void main(String[] args) {
-        TwitterSource source = new TwitterSource(Long.MAX_VALUE, "#old");
+        TwitterSource source = new TwitterSource(Long.MAX_VALUE, "#forceawakens");
         TwitterCollector collector = new TwitterCollector();
    
         

@@ -48,7 +48,7 @@ public class TwitterSource implements Source<TwitterResponse> {
 		Query query = new Query(searchQuery);
 		query.setCount(15);
 //		query.setLang("EN");
-//		query.setSince("20100101");
+//		query.setSince("2010-01-01");
 		if (minId != Long.MAX_VALUE) {
 			query.setMaxId(minId);
 		}
