@@ -1,4 +1,4 @@
-package edu.csula.datascience.acquisition;
+package edu.csula.datascience.acquisition.twitter;
 
 public class TwitterResponse {
 	private long id;
@@ -76,10 +76,7 @@ public class TwitterResponse {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((text == null) ? 0 : text.hashCode());
-		return result;
+		return 0;
 	}
 
 	@Override
@@ -92,7 +89,7 @@ public class TwitterResponse {
 			return false;
 		TwitterResponse other = (TwitterResponse) obj;
 		
-		if (this.text.equals(other.text)) {
+		if (this.text.equals(other.text)) {			
 			return true;
 		}		
 		return false;
