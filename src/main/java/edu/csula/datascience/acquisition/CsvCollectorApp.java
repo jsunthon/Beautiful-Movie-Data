@@ -1,6 +1,8 @@
 package edu.csula.datascience.acquisition;
 
 
+import edu.csula.datascience.utilities.MongoUtilities;
+
 import java.util.Collection;
 
 public class CsvCollectorApp {
@@ -16,6 +18,9 @@ public class CsvCollectorApp {
             Collection<String> mungedMovies = collector.mungee(movies);
             collector.save(mungedMovies);
         }
+
+        MongoUtilities mongoUtil = new MongoUtilities("movie-data", "csv_files");
+        mongoUtil.printDocuments();
 
     }
 }
