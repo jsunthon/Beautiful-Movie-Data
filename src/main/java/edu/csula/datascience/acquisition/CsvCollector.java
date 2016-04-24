@@ -6,9 +6,11 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
-public class CsvCollector implements Collector<String, String>{
+public class CsvCollector implements Collector<Movie, Movie>{
     MongoClient mongoClient;
     MongoDatabase database;
     MongoCollection<Document> collection;
@@ -22,16 +24,19 @@ public class CsvCollector implements Collector<String, String>{
         collection = database.getCollection("csv_files");
     }
 
-    public Collection<String> mungee(Collection<String> src){
+    public Collection<Movie> mungee(Collection<Movie> src){
         return src;
     }
 
-    public void save(Collection<String> data){
-        Document document = new Document().append("movieID", data.toArray()[0])
-                .append("title", data.toArray()[1])
-                .append("genre", data.toArray()[2])
-                .append("rating", data.toArray()[3]);
+    public void save(Collection<Movie> data){
+        List<Document> documents = data.stream()
+                .map(item -> new Document()
+                        .append("movieID", item.getId())
+                        .append("title", item.getTitle())
+                        .append("rating", item.getRating()))
+                .collect(Collectors.toList());
 
-        collection.insertOne(document);
+        collection.insertMany(documents);
+
     }
 }
