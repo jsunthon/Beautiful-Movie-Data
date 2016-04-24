@@ -12,15 +12,17 @@ public class CsvSource implements Source<Movie>{
     private final String DELIMITER = ",";
     private String line;
 
-    public CsvSource(String fileName){
+    public CsvSource(String fileName, boolean hasHeader){
         try {
             File file = new File(fileName);
             br1 = new BufferedReader(new FileReader(file));
             br2 = new BufferedReader(new FileReader(file));
 
             //skips header of csv file
-            line = br1.readLine();
-            line = br2.readLine();
+            if (hasHeader) {
+                line = br1.readLine();
+                line = br2.readLine();
+            }
             //puts br2 1 line ahead;
             line = br2.readLine();
         }catch (Exception e){
@@ -54,7 +56,7 @@ public class CsvSource implements Source<Movie>{
                 //check if next entry
                 line = br2.readLine();
                 nextTokens = line.split(DELIMITER);
-                if (nextTokens[0].equals(tokens[0])){
+                if (!nextTokens[0].equals(tokens[0])){
                     break;
                 }
             } while(hasNext());
