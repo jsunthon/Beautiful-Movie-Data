@@ -46,8 +46,9 @@ public class TwitterSource implements Source<TwitterResponse> {
 		Twitter twitter = tf.getInstance();
 
 		Query query = new Query(searchQuery);
-		query.setLang("EN");
-		query.setSince("20160101");
+		query.setCount(15);
+//		query.setLang("EN");
+//		query.setSince("20100101");
 		if (minId != Long.MAX_VALUE) {
 			query.setMaxId(minId);
 		}
@@ -59,16 +60,33 @@ public class TwitterSource implements Source<TwitterResponse> {
 
 	private List<TwitterResponse> getTweets(Twitter twitter, Query query) {
 		QueryResult result;
+		
 		List<TwitterResponse> list = Lists.newArrayList();
 		try {
 			do {
+//				try {
+//					Thread.sleep(5000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				result = twitter.search(query);
-
+				System.out.println("completed in " + result.getCompletedIn());
+				System.out.println("result page : " + result.getCount());
 				List<Status> tweets = result.getTweets();
+				System.out.println("First Twitter API Call, size of list: " + tweets.size());
+				
+				if (tweets.size() <= 1) {
+					minId = 0;
+					return list;
+				}
+				
 				for (Status tweet : tweets) {
-					minId = Math.min(0, tweet.getId());
+					System.out.println("text: " + tweet.getText());
+					System.out.println("id: " + tweet.getId());
+					minId = Math.min(minId, tweet.getId());
 					list.add(new TwitterResponse(tweet.getId(), tweet.getFavoriteCount(), tweet.getRetweetCount(),
-							tweet.getUser().getName(), tweet.getText(), tweet.getLang(), tweet.getSource()));
+							tweet.getUser().getName(), tweet.getText(), tweet.getCreatedAt().toString(), tweet.getSource()));
 				}
 
 			} while ((query = result.nextQuery()) != null);

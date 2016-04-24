@@ -30,7 +30,7 @@ public class CollectorTest {
     }
 
     @Test
-    public void operate() throws Exception {
+    public void mungee() throws Exception {
     	
     	Collection<TwitterModel> list = collector.mungee(source.next());
         List<TwitterModel> expectedList = Lists.newArrayList(
