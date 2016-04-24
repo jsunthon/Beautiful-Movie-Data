@@ -6,7 +6,7 @@ import twitter4j.conf.ConfigurationBuilder;
 import java.util.Collection;
 import java.util.List;
 
-public class TwitterSource implements Source<Status> {
+public class TwitterSource implements Source<TwitterResponse> {
 	private long minId;
 	private final String searchQuery;
 	private String TWITTER_CONSUMER_KEY = "KXjY39ROD2QMa0LUIkEBSnJMM";
@@ -25,8 +25,8 @@ public class TwitterSource implements Source<Status> {
 	}
 
 	@Override
-	public Collection<Status> next() {
-		List<Status> list = Lists.newArrayList();
+	public Collection<TwitterResponse> next() {
+		List<TwitterResponse> list = Lists.newArrayList();
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		// cb.setDebugEnabled(true).setOAuthConsumerKey(System.getenv("TWITTER_CONSUMER_KEY"))
 		// .setOAuthConsumerSecret(System.getenv("TWITTER_CONSUMER_SECRET"))
@@ -53,9 +53,9 @@ public class TwitterSource implements Source<Status> {
 		return list;
 	}
 
-	private List<Status> getTweets(Twitter twitter, Query query) {
+	private List<TwitterResponse> getTweets(Twitter twitter, Query query) {
 		QueryResult result;
-		List<Status> list = Lists.newArrayList();
+		List<TwitterResponse> list = Lists.newArrayList();
 		try {
 			do {
 				result = twitter.search(query);
@@ -63,8 +63,10 @@ public class TwitterSource implements Source<Status> {
 				List<Status> tweets = result.getTweets();
 				for (Status tweet : tweets) {
 					minId = Math.min(minId, tweet.getId());
+					list.add(new TwitterResponse(tweet.getId(), tweet.getFavoriteCount(), tweet.getRetweetCount(),
+							tweet.getUser().getName(), tweet.getText(), tweet.getLang(), tweet.getSource()));
 				}
-				list.addAll(tweets);
+
 			} while ((query = result.nextQuery()) != null);
 		} catch (TwitterException e) {
 			// Catch exception to handle rate limit and retry
