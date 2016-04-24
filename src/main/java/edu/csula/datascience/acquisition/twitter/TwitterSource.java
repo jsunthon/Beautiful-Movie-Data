@@ -1,9 +1,12 @@
-package edu.csula.datascience.acquisition;
+package edu.csula.datascience.acquisition.twitter;
 
 import com.google.common.collect.Lists;
+
+import edu.csula.datascience.acquisition.csv.Source;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class TwitterSource implements Source<TwitterResponse> {
@@ -15,6 +18,7 @@ public class TwitterSource implements Source<TwitterResponse> {
 	private String TWITTER_ACCESS_SECRET = "ByBD930AcAK9Ue00PvWXMFQ3o7j4RSRSZXthz0rigzKOk";
 
 	public TwitterSource(long minId, String query) {
+		System.out.println(query);
 		this.minId = minId;
 		this.searchQuery = query;
 	}
@@ -49,7 +53,7 @@ public class TwitterSource implements Source<TwitterResponse> {
 		}
 
 		list.addAll(getTweets(twitter, query));
-
+//		printText(list);
 		return list;
 	}
 
@@ -62,7 +66,7 @@ public class TwitterSource implements Source<TwitterResponse> {
 
 				List<Status> tweets = result.getTweets();
 				for (Status tweet : tweets) {
-					minId = Math.min(minId, tweet.getId());
+					minId = Math.min(0, tweet.getId());
 					list.add(new TwitterResponse(tweet.getId(), tweet.getFavoriteCount(), tweet.getRetweetCount(),
 							tweet.getUser().getName(), tweet.getText(), tweet.getLang(), tweet.getSource()));
 				}
@@ -81,5 +85,15 @@ public class TwitterSource implements Source<TwitterResponse> {
 		}
 
 		return list;
+	}
+	
+	/**
+	 * Helper methods
+	 */	
+	public void printText(Collection<TwitterResponse> list) {
+		Iterator<TwitterResponse> iterator = list.iterator();
+		while (iterator.hasNext()) {
+			System.out.println(iterator.next().getText());
+		}
 	}
 }

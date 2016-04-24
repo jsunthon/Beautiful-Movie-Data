@@ -1,8 +1,12 @@
-package edu.csula.datascience.acquisition;
+package edu.csula.datascience.acquisition.twitter;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
+import edu.csula.datascience.acquisition.csv.Collector;
+import edu.csula.datascience.utilities.TweetAnalysis;
+
 import org.bson.Document;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,11 +35,14 @@ public class TwitterCollector implements Collector<TwitterResponse, TwitterRespo
 		// sets remove duplicates based on the equals() and hashCode() method of
 		// TwitterResponse
 		Set<TwitterResponse> noDups = new HashSet<TwitterResponse>(src);
+//		System.out.println("Calling mungee...");
+//		TweetAnalysis.printText(noDups);
 		return noDups;
 	}
 
 	@Override
 	public void save(Collection<TwitterResponse> data) {
+		System.out.print("Data size in saved method" + data.size());
 		List<Document> documents = data.stream()
 				.map(item -> new Document().append("tweetId", item.getId()).append("favCt", item.getFavCt())
 						.append("retwtCt", item.getRetwtCt()).append("username", item.getUserName())
@@ -46,10 +53,4 @@ public class TwitterCollector implements Collector<TwitterResponse, TwitterRespo
 		collection.insertMany(documents);
 	}
 
-	/**
-	 * helper methods
-	 */
-	public static void displayData() {
-
-	}
 }
