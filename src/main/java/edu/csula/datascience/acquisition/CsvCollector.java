@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,8 +25,25 @@ public class CsvCollector implements Collector<Movie, Movie>{
         collection = database.getCollection("csv_files");
     }
 
+    //Combines ratings for the same movie into one entry
     public Collection<Movie> mungee(Collection<Movie> src){
-        return src;
+        ArrayList<Movie> srcArray = new ArrayList(src);
+        ArrayList<Movie> finalMovieEntry = new ArrayList();
+        double averageRating = 0.0;
+        String title = "";
+        int mid = 0;
+        Movie theMovie = new Movie();
+        for (Movie movie : srcArray){
+            mid = movie.getId();
+            title = movie.getTitle();
+            averageRating += movie.getRating();
+        }
+        averageRating =  averageRating/(double)src.size();
+        theMovie.setId(mid);
+        theMovie.setTitle(title);
+        theMovie.setRating(averageRating);
+        finalMovieEntry.add(theMovie);
+        return finalMovieEntry;
     }
 
     public void save(Collection<Movie> data){
