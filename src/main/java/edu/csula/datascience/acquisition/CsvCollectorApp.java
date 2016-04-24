@@ -18,7 +18,7 @@ public class CsvCollectorApp {
         while (source.hasNext()){
             Collection<Movie> movies = source.next();
             Collection<Movie> mungedMovies = collector.mungee(movies);
-            if (isValidTitle(new ArrayList<Movie>(mungedMovies).get(0).getTitle())){
+            if (!mungedMovies.isEmpty()){
                 collector.save(mungedMovies);
             }
             else{
@@ -30,13 +30,5 @@ public class CsvCollectorApp {
         MongoUtilities mongoUtil = new MongoUtilities("movie-data", "csv_files");
         mongoUtil.printDocuments();
 
-
-    }
-
-    //regex from StackOverflow
-    private static boolean isValidTitle(String title){
-        boolean valid = title.matches("^[a-zA-Z0-9_ ]*$");
-
-        return valid;
     }
 }

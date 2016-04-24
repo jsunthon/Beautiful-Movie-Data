@@ -39,23 +39,25 @@ public class CsvCollector implements Collector<Movie, Movie>{
 
         //regex found on stackoverflow
         Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(title);
+        title = replaceLast(title, "\\(.*?\\) ?", "");
         while(m.find()) {
             try {
                 year = Integer.parseInt(m.group(1));
             } catch (Exception e){
                 //if there is a parenthesis in the title
             }
-            title = title.replaceAll("\\(.*?\\) ?", "");
         }
+        if (isValidTitle(title)) {
 
-        Movie theMovie = new Movie(srcArray.get(0).getId(), title);
-        for (Movie movie : srcArray) {
-            averageRating += movie.getRating();
+            Movie theMovie = new Movie(srcArray.get(0).getId(), title);
+            for (Movie movie : srcArray) {
+                averageRating += movie.getRating();
+            }
+            averageRating = averageRating / (double) src.size();
+            theMovie.setRating(averageRating);
+            theMovie.setYear(year);
+            finalMovieEntry.add(theMovie);
         }
-        averageRating = averageRating / (double) src.size();
-        theMovie.setRating(averageRating);
-        theMovie.setYear(year);
-        finalMovieEntry.add(theMovie);
 
         return finalMovieEntry;
 
@@ -74,7 +76,14 @@ public class CsvCollector implements Collector<Movie, Movie>{
 
     }
 
+    //regex helper methods from StackOverflow
+    private static boolean isValidTitle(String title){
+        boolean valid = title.matches("^[a-zA-Z0-9_() ]*$");
 
+        return valid;
+    }
 
-
+    private static String replaceLast(String text, String regex, String replacement) {
+        return text.replaceFirst("(?s)(.*)" + regex, "$1" + replacement);
+    }
 }
