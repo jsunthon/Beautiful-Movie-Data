@@ -1,4 +1,4 @@
-package edu.csula.datascience.acquisition;
+package edu.csula.datascience.acquisition.csv;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

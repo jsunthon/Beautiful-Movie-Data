@@ -1,4 +1,4 @@
-package edu.csula.datascience.acquisition;
+package edu.csula.datascience.acquisition.csv;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
