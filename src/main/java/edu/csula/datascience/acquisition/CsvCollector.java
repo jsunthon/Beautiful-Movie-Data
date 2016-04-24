@@ -27,6 +27,11 @@ public class CsvCollector implements Collector<String, String>{
     }
 
     public void save(Collection<String> data){
+        Document document = new Document().append("movieID", data.toArray()[0])
+                .append("title", data.toArray()[1])
+                .append("genre", data.toArray()[2])
+                .append("rating", data.toArray()[3]);
 
+        collection.insertOne(document);
     }
 }
