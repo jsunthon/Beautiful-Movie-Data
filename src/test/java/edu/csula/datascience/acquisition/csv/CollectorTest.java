@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -31,16 +32,24 @@ public class CollectorTest {
 
     @Test
     public void mungee() throws Exception {
+//    	System.out.println(source.next().size());
+    	Collection<MovieModel> list1 = new ArrayList<>();
+    	Collection<MovieModel> list2 = new ArrayList<>();
+    	while (source.hasNext()) {
+    		Collection<MovieModel> list2 = collector.mungee(source.next());
+    	}
     	
-    	Collection<MovieModel> list = collector.mungee(source.next());
+    	list1.addAll(list2);
+    	
 //        List<MovieModel> expectedList = Lists.newArrayList(
-//            new MovieModel(1234, text)
+//            new MovieModel(1, "Toy Story ")
 //        );
-
-        Assert.assertEquals(3, list.size());
+    	
+    	//see if we get 7 movie objects
+        Assert.assertEquals(7, list.size());
 
 //        for (int i = 0; i < 2; i ++) {
-////            Assert.assertEquals(list.get(i).getId(), expectedList.get(i).getId());
+//            Assert.assertEquals(list.get(i).getId(), expectedList.get(i).getId());
 //            Assert.assertEquals(list.get(i).getText(), expectedList.get(i).getText());
 //        }
     }
