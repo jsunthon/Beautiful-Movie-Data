@@ -21,15 +21,15 @@ public class CsvCollectorApp {
             Collection<Movie> movies = source.next();
             Collection<Movie> mungedMovies = collector.mungee(movies);
             ArrayList<Movie> munged = new ArrayList(mungedMovies);
-            if (!mungedMovies.isEmpty() || munged.get(0).getYear() > 2010){
+            if (!mungedMovies.isEmpty() && munged.get(0).getYear() > 2010){
                 collector.save(mungedMovies);
 
                 TwitterSource tSource = new TwitterSource(Long.MAX_VALUE, munged.get(0).getHashtagTitle());
                 TwitterCollector tCollector = new TwitterCollector();
 
 
-//        twitter has a limit on how many calls you can make. comment this code out
-//        if you want to stop the calls
+                //twitter has a limit on how many calls you can make. comment this code out
+                //if you want to stop the calls
                 while (tSource.hasNext()) {
                     Collection<TwitterResponse> tweets = tSource.next();
                     Collection<TwitterResponse> cleanedTweets = tCollector.mungee(tweets); //returns a collection with all duplicates removed
