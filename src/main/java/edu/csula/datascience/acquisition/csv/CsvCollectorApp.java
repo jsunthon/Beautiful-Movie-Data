@@ -13,7 +13,7 @@ import java.util.Collection;
 public class CsvCollectorApp {
     public static void main(String[] args){
         //TODO add file
-        String file = "mergedMovieData.csv";
+        String file = "test.csv";
         CsvSource source = new CsvSource(file, true);
         CsvCollector collector = new CsvCollector();
 
@@ -21,7 +21,7 @@ public class CsvCollectorApp {
             Collection<Movie> movies = source.next();
             Collection<Movie> mungedMovies = collector.mungee(movies);
             ArrayList<Movie> munged = new ArrayList(mungedMovies);
-            if (!mungedMovies.isEmpty() && munged.get(0).getYear() > 1995){
+            if (!mungedMovies.isEmpty() && munged.get(0).getYear() > 1990){
                 collector.save(mungedMovies);
 
                 //retrieving twitter data based on csv file
