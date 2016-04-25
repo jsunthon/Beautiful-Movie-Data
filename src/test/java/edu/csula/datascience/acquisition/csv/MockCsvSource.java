@@ -5,19 +5,22 @@ import com.google.common.collect.Lists;
 import edu.csula.datascience.acquisition.csv.Source;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
  * A mock source to provide data
  */
 public class MockCsvSource implements Source<MockCsvData> {
-    int index = 0;
-
+    int index = 7;
+    
     @Override
     public boolean hasNext() {
-        return index < 1;
+    	index--;
+        return index >= 1;
     }
-
+    
+    //simulate the csv data
     @Override
     public Collection<MockCsvData> next() {
         return Lists.newArrayList(

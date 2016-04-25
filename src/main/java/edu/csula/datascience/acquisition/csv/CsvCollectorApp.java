@@ -13,7 +13,7 @@ import java.util.Collection;
 public class CsvCollectorApp {
     public static void main(String[] args){
         //TODO add file
-        String file = "mergedMovieData.csv";
+        String file = "test.csv";
         CsvSource source = new CsvSource(file, true);
         CsvCollector collector = new CsvCollector();
 
