@@ -81,8 +81,9 @@ public class CsvCollector implements Collector<Movie, Movie>{
 
     //regex helper methods from StackOverflow
     private static boolean isValidTitle(String title){
-        boolean valid = title.matches("^[a-zA-Z0-9_() ]*$");
-
+        boolean valid = (title.matches("^[a-zA-Z0-9_() ]*$") &&
+                            (title != null) &&
+                            (!title.replaceAll("\\s+","").isEmpty()));
         return valid;
     }
 
