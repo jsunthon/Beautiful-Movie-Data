@@ -5,28 +5,31 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import au.com.bytecode.opencsv.CSV;
 
+
+import au.com.bytecode.opencsv.CSVReader;
 import edu.csula.datascience.acquisition.Movie;
 
 
 public class CsvSource implements Source<Movie>{
-    private BufferedReader br1, br2;
+    private CSVReader cr1, cr2;
     private final String DELIMITER = ",";
-    private String line;
+    private String line[];
 
     public CsvSource(String fileName, boolean hasHeader){
         try {
-            File file = new File(fileName);
-            br1 = new BufferedReader(new FileReader(file));
-            br2 = new BufferedReader(new FileReader(file));
+            File file = new File(ClassLoader.getSystemResource(fileName).toURI());
+            cr1 = new CSVReader(new FileReader(file));
+            cr2 = new CSVReader(new FileReader(file));
 
             //skips header of csv file
             if (hasHeader) {
-                line = br1.readLine();
-                line = br2.readLine();
+                line = cr1.readNext();
+                line = cr2.readNext();
             }
             //puts br2 1 line ahead;
-            line = br2.readLine();
+            line = cr2.readNext();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -43,22 +46,21 @@ public class CsvSource implements Source<Movie>{
 
     public Collection<Movie> next(){
         ArrayList<Movie> movies = new ArrayList();
-        String[] tokens, nextTokens;
+        String[] tokens;
         try {
             do{
-                line = br1.readLine();
+                line = cr1.readNext();
+                tokens = line;
                 Movie tempMovie = new Movie();
-                tokens = line.split(DELIMITER);
-                tempMovie.setId(Integer.parseInt(tokens[0]));
-                tempMovie.setTitle(tokens[1]);
-                tempMovie.setRating(Double.parseDouble(tokens[4]));
+                tempMovie.setId(Integer.parseInt(line[0]));
+                tempMovie.setTitle(line[1]);
+                tempMovie.setRating(Double.parseDouble(line[4]));
 
                 movies.add(tempMovie);
 
                 //check if next entry
-                line = br2.readLine();
-                nextTokens = line.split(DELIMITER);
-                if (!nextTokens[0].equals(tokens[0])){
+                line = cr2.readNext();
+                if (!line[0].equals(tokens[0])){
                     break;
                 }
             } while(hasNext());
