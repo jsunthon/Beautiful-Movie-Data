@@ -46,28 +46,33 @@ public class CsvSource implements Source<Movie>{
 
     public Collection<Movie> next(){
         ArrayList<Movie> movies = new ArrayList();
-        String[] tokens;
+        int counter = 0;
+        String[] tokens = line;
+        double rating = 0.0;
         try {
             do{
+                counter++;
                 line = cr1.readNext();
+                try {
+                    rating += Double.parseDouble(line[4]);
+                } catch(Exception e){
+                }
                 tokens = line;
-                Movie tempMovie = new Movie();
-                tempMovie.setId(Integer.parseInt(line[0]));
-                tempMovie.setTitle(line[1]);
-                tempMovie.setRating(Double.parseDouble(line[4]));
-
-                movies.add(tempMovie);
 
                 //check if next entry
                 line = cr2.readNext();
-                if (!line[0].equals(tokens[0])){
+                if (line == null || !line[0].equals(tokens[0])){
                     break;
                 }
             } while(hasNext());
         } catch (Exception e){
             e.printStackTrace();
         }
-
+        Movie tempMovie = new Movie();
+        tempMovie.setId(Integer.parseInt(tokens[0]));
+        tempMovie.setTitle(tokens[1]);
+        tempMovie.setRating(rating/(double)counter);
+        movies.add(tempMovie);
         return movies;
     }
 }
