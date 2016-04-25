@@ -36,7 +36,7 @@ public class CsvCollector implements Collector<Movie, Movie>{
     public Collection<Movie> mungee(Collection<Movie> src){
         ArrayList<Movie> srcArray = new ArrayList(src);
         ArrayList<Movie> finalMovieEntry = new ArrayList();
-        double averageRating = 0.0;
+        double averageRating = srcArray.get(0).getRating();
         title = srcArray.get(0).getTitle();
         int year = 0;
 
@@ -53,10 +53,7 @@ public class CsvCollector implements Collector<Movie, Movie>{
         if (isValidTitle(title)) {
 
             Movie theMovie = new Movie(srcArray.get(0).getId(), title);
-            for (Movie movie : srcArray) {
-                averageRating += movie.getRating();
-            }
-            averageRating = averageRating / (double) src.size();
+
             theMovie.setRating(averageRating);
             theMovie.setYear(year);
             finalMovieEntry.add(theMovie);
