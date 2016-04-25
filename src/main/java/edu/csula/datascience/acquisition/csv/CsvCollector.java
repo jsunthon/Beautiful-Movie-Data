@@ -20,7 +20,7 @@ public class CsvCollector implements Collector<Movie, Movie>{
     MongoClient mongoClient;
     MongoDatabase database;
     MongoCollection<Document> collection;
-    private String title = "";
+    private String title = "s";
 
     public CsvCollector(){
         // establish database connection to MongoDB
