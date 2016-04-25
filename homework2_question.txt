@@ -11,7 +11,7 @@ How long does it take for you to download data? Have you download complete data 
 The Csv file when compressed takes about 15 seconds to download. The Twitter API is limited according to the dev.twitter.com: "Search is rate limited at 180 queries per 15 minute window."  We have complete CSV data but incomplete Twitter data because of the rate limit.
 
 4.
-The CSV file is about 800 megabytes with 22,000,000 records. Each of these records is a rating about a movie. Unfortunately we have not finished collecting the Twitter data so we don't know how big it is. We are searching for data based on a query of the form "#movie_name", where movie_name is extracted from the CSV file. There are many different movies. Some movie names will naturally yield many tweets whilst other will yield very little, thus making it hard to estimate the size of data that Twitter will return.
+The CSV file is about 800 megabytes with 22,000,000 records. Each of these records is a rating about a movie. Unfortunately we have not finished collecting the Twitter data so we don't know how big it is. We are searching for data based on a query of the form "#movie_name", where movie_name is extracted from the CSV file. There are many different movies. Some movie names will naturally yield many tweets whilst other will yield very little, thus making it hard to estimate the size of data that Twitter will return and ultimately how much we will end up with.
 
 5. 
 Do you face any dirty data issue? If you do, how did you clean up your data?
