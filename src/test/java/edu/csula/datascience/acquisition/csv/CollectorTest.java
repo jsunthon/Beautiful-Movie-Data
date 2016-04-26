@@ -20,8 +20,8 @@ import static org.junit.Assert.*;
  * A test case to show how to use Collector and Source
  */
 public class CollectorTest {
-    private Collector<MovieModel, MockCsvData> collector;
-    private Source<MockCsvData> source;
+    private Collector<MovieModel, MovieModel> collector;
+    private Source<MovieModel> source;
    
 
     @Before
@@ -33,24 +33,26 @@ public class CollectorTest {
     @Test
     public void mungee() throws Exception {
 //    	System.out.println(source.next().size());
-    	Collection<MovieModel> list1 = new ArrayList<>();
-    	Collection<MovieModel> list2 = new ArrayList<>();
-    	while (source.hasNext()) {
-    		Collection<MovieModel> list2 = collector.mungee(source.next());
-    	}
-    	
-    	list1.addAll(list2);
-    	
-//        List<MovieModel> expectedList = Lists.newArrayList(
-//            new MovieModel(1, "Toy Story ")
-//        );
-    	
-    	//see if we get 7 movie objects
-        Assert.assertEquals(7, list.size());
+    	List<MovieModel> expected = Lists.newArrayList(
+                new MovieModel(1, "Toy Story ", 4.5, 1995),
+                new MovieModel(2, "Force Awakens ", 4.0, 2016),
+                new MovieModel(3, "Guardians of the Galaxy ", 3.5, 2015),
+                new MovieModel(5, "we are (cool) ", 3.0, 2000),
+                new MovieModel(8, "testing ", 3.0, 2015)
+        );
 
-//        for (int i = 0; i < 2; i ++) {
-//            Assert.assertEquals(list.get(i).getId(), expectedList.get(i).getId());
-//            Assert.assertEquals(list.get(i).getText(), expectedList.get(i).getText());
-//        }
+        int expectedIndex = 0;
+
+        do {
+            List<MovieModel> list = (List<MovieModel>)collector.mungee(source.next());
+            if (list.size() == 0){
+                continue;
+            }
+            Assert.assertEquals(list.get(0).getId(), expected.get(expectedIndex).getId());
+            Assert.assertEquals(list.get(0).getTitle(), expected.get(expectedIndex).getTitle());
+            Assert.assertEquals(list.get(0).getRating(), expected.get(expectedIndex).getRating(), .01);
+            Assert.assertEquals(list.get(0).getYear(), expected.get(expectedIndex).getYear());
+            expectedIndex++;
+        } while(source.hasNext());
     }
 }
