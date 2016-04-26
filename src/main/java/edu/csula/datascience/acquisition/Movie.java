@@ -11,7 +11,9 @@ public class Movie {
     public Movie(int movieID, String movieTitle){
         id = movieID;
         title = movieTitle;
-        hashtagTitle = "#" + title.replaceAll("\\s","");
+        if (movieTitle != null) {
+            hashtagTitle = "#" + title.replaceAll("\\s", "");
+        }
     }
 
     public void setId(int id){

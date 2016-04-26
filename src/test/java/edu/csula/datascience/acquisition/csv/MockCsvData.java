@@ -4,16 +4,15 @@ package edu.csula.datascience.acquisition.csv;
  * Mock raw twitter data
  */
 public class MockCsvData {
-    private int id;
+    private int id, year;
     private String title;
-    private int rating;
-    private String timeStamp;
-	public MockCsvData(int id, String title, int rating, String timeStamp) {
+    private double rating;
+
+	public MockCsvData(int id, String title, double rating) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.rating = rating;
-		this.timeStamp = timeStamp;
 	}
 	/**
 	 * @return the id
@@ -42,28 +41,21 @@ public class MockCsvData {
 	/**
 	 * @return the rating
 	 */
-	public int getRating() {
+	public double getRating() {
 		return rating;
 	}
 	/**
 	 * @param rating the rating to set
 	 */
-	public void setRating(int rating) {
+	public void setRating(double rating) {
 		this.rating = rating;
 	}
-	/**
-	 * @return the timeStamp
-	 */
-	public String getTimeStamp() {
-		return timeStamp;
-	}
-	/**
-	 * @param timeStamp the timeStamp to set
-	 */
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
+
+    public int getYear(){
+		return year;
 	}
     
-    
-    
+    public void setYear(int year){
+		this.year = year;
+	}
 }

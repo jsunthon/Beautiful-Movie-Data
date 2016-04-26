@@ -17,7 +17,17 @@ public class MovieModel {
     public MovieModel(int movieID, String movieTitle){
         id = movieID;
         title = movieTitle;
+        if (title != null) {
+            hashtagTitle = "#" + title.replaceAll("\\s", "");
+        }
+    }
+
+    public MovieModel(int movieID, String movieTitle, double rating, int year){
+        id = movieID;
+        title = movieTitle;
         hashtagTitle = "#" + title.replaceAll("\\s","");
+        this.rating = rating;
+        this.year = year;
     }
 
     public void setId(int id){

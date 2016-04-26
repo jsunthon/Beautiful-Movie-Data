@@ -20,7 +20,6 @@ public class CsvCollector implements Collector<Movie, Movie>{
     MongoClient mongoClient;
     MongoDatabase database;
     MongoCollection<Document> collection;
-    private String title = "s";
 
     public CsvCollector(){
         // establish database connection to MongoDB
@@ -37,21 +36,20 @@ public class CsvCollector implements Collector<Movie, Movie>{
         ArrayList<Movie> srcArray = new ArrayList(src);
         ArrayList<Movie> finalMovieEntry = new ArrayList();
         double averageRating = srcArray.get(0).getRating();
-        title = srcArray.get(0).getTitle();
+        String title = srcArray.get(0).getTitle();
         int year = 0;
 
-        //regex found on stackoverflow
-        Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(title);
-        title = replaceLast(title, "\\(.*?\\) ?", "");
-        while(m.find()) {
-            try {
-                year = Integer.parseInt(m.group(1));
-            } catch (Exception e){
-                //if there is a parenthesis in the title
-            }
-        }
         if (isValidTitle(title)) {
-
+            //regex found on stackoverflow
+            Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(title);
+            title = replaceLast(title, "\\(.*?\\) ?", "");
+            while(m.find()) {
+                try {
+                    year = Integer.parseInt(m.group(1));
+                } catch (Exception e){
+                    //if there is a parenthesis in the title
+                }
+            }
             Movie theMovie = new Movie(srcArray.get(0).getId(), title);
 
             theMovie.setRating(averageRating);
@@ -78,9 +76,9 @@ public class CsvCollector implements Collector<Movie, Movie>{
 
     //regex helper methods from StackOverflow
     private static boolean isValidTitle(String title){
-        boolean valid = (title.matches("^[a-zA-Z0-9_() ]*$") &&
-                            (title != null) &&
-                            (!title.replaceAll("\\s+","").isEmpty()));
+        boolean valid = (title != null &&
+                            (title.matches("^[a-zA-Z0-9_() ]*$") &&
+                            (!title.replaceAll("\\s+","").isEmpty())));
         return valid;
     }
 
