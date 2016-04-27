@@ -16,7 +16,7 @@ public class MockTwitterCollector implements Collector<TwitterModel, MockTwitter
         // in your example, you might need to check src.hasNext() first
         Collection<TwitterModel> newSrc = src
             .stream()
-            .filter(data -> data.getContent() != null)
+            .filter(data -> data.getText() != null)
             .map(TwitterModel::build)
             .collect(Collectors.toList());
         

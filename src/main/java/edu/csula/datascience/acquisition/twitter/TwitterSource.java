@@ -42,7 +42,6 @@ public class TwitterSource implements Source<TwitterResponse> {
 	StatusListener listener = new StatusListener() {
 		@Override
 		public void onStatus(Status status) {
-			System.out.print("ID: " + status.getId());
 			System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
 
 			if (responses == null)

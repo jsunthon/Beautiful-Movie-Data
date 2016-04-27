@@ -4,13 +4,23 @@ package edu.csula.datascience.acquisition.twitter;
  * A simple model for testing
  */
 public class TwitterModel {
-	private final long id;
+	private long id;
+	private int favCt;
+	private int retwtCt;
+	private String userName;
 	private String text;
+	private String date;
+	private String source;
 
-	public TwitterModel(long id, String text) {
+	public TwitterModel(long id, int favCt, int retwtCt, String userName, String text, String date, String source) {
 		super();
 		this.id = id;
+		this.favCt = favCt;
+		this.retwtCt = retwtCt;
+		this.userName = userName;
 		this.text = text;
+		this.date = date;
+		this.source = source;
 	}
 
 	/**
@@ -21,16 +31,58 @@ public class TwitterModel {
 	}
 
 	/**
+	 * @return the favCt
+	 */
+	public int getFavCt() {
+		return favCt;
+	}
+
+	/**
+	 * @return the retwtCt
+	 */
+	public int getRetwtCt() {
+		return retwtCt;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
 	 * @return the text
 	 */
 	public String getText() {
 		return text;
 	}
 
-	public static TwitterModel build(MockTwitterData data) {
-		return new TwitterModel(data.getId(), data.getContent());
+	/**
+	 * @return the date
+	 */
+	public String getDate() {
+		return date;
 	}
-	
+
+	/**
+	 * @return the source
+	 */
+	public String getSource() {
+		return source;
+	}
+
+	public static TwitterModel build(MockTwitterData data) {
+		return new TwitterModel(
+				data.getId(), 
+				data.getFavCt(), 
+				data.getRetwtCt(), 
+				data.getUserName(), 
+				data.getText(),
+				data.getDate(), 
+				data.getSource());
+	}
+
 	@Override
 	public int hashCode() {
 		return 0;
@@ -45,10 +97,10 @@ public class TwitterModel {
 		if (getClass() != obj.getClass())
 			return false;
 		TwitterModel other = (TwitterModel) obj;
-		
-		if (this.text.equals(other.text)) {			
+
+		if (this.text.equals(other.text)) {
 			return true;
-		}		
+		}
 		return false;
 	}
 }

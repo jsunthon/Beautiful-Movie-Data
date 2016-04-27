@@ -12,7 +12,10 @@ import java.util.function.Consumer;
  */
 public class MockTwitterSource implements Source<MockTwitterData> {
     int index = 0;
-    private final String text = "The Burning Votive Candle https://t.co/PFYABgr2Ms #candle #votivecandle";
+    private final String text = "Hi @Harry_Styles, "
+    		+ "I hope you're having a day as lovely as you are. "
+    		+ "Thank you for being you. Mind following me? "
+    		+ "All my love x —212,546";
 
     @Override
     public boolean hasNext() {
@@ -22,11 +25,51 @@ public class MockTwitterSource implements Source<MockTwitterData> {
     @Override
     public Collection<MockTwitterData> next() {
         return Lists.newArrayList(
-            new MockTwitterData(1234, text),
-            new MockTwitterData(1235, "hello"),
-            new MockTwitterData(1236, text),
-            new MockTwitterData(1236, text),
-            new MockTwitterData(1234, "nope!")
+            new MockTwitterData(
+            		Long.valueOf("725439389501902848"),
+            		0,
+            		1,
+            		"hesbless",
+            		text,
+            		"Wed Apr 27 14:40:01 PDT 2016",
+            		"<a href=\"http://twitter.com/download/iphone\""
+            		+ " rel=\"nofollow\">Twitter for iPhone</a>"),
+            new MockTwitterData(
+            		Long.valueOf("725439389501902848"),
+            		0,
+            		1,
+            		"hesbless",
+            		text,
+            		"Wed Apr 27 14:40:01 PDT 2016",
+            		"<a href=\"http://twitter.com/download/iphone\""
+            		+ " rel=\"nofollow\">Twitter for iPhone</a>"),
+            new MockTwitterData(
+            		Long.valueOf("725439389501902849"),
+            		0,
+            		1,
+            		"hesbless",
+            		text,
+            		"Wed Apr 27 14:40:01 PDT 2016",
+            		"<a href=\"http://twitter.com/download/iphone\""
+            		+ " rel=\"nofollow\">Twitter for iPhone</a>"),
+            new MockTwitterData(
+            		Long.valueOf("725439389501902849"),
+            		0,
+            		1,
+            		"darkserith",
+            		"Hei!!!!!",
+            		"Wed Apr 27 14:40:01 PDT 2016",
+            		"<a href=\"http://twitter.com/download/iphone\""
+            		+ " rel=\"nofollow\">Twitter for iPhone</a>"),
+            new MockTwitterData(
+            		Long.valueOf("725439389501902850"),
+            		0,
+            		1,
+            		"tim_cook",
+            		"HI!!!!!!",
+            		"Wed Apr 27 14:40:01 PDT 2016",
+            		"<a href=\"http://twitter.com/download/iphone\""
+            		+ " rel=\"nofollow\">Twitter for iPhone</a>")            
         );
     }
 }
