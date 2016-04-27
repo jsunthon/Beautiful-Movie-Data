@@ -25,7 +25,7 @@ public class CollectorApp {
                 collector.save(mungedMovies);
 
                 //retrieving twitter data based on csv file
-                TwitterSource tSource = new TwitterSource(Long.MAX_VALUE, munged.get(0).getHashtagTitle());
+                TwitterSource tSource = new TwitterSource(munged.get(0).getHashtagTitle(), 10000);
                 TwitterCollector tCollector = new TwitterCollector();
 
 
