@@ -31,7 +31,8 @@ public class Movie {
 
     public void setTitle(String title) {
         this.title = title;
-        hashtagTitle = title.replaceAll("\\s","");
+        if (title != null)
+            hashtagTitle = title.replaceAll("\\s","");
     }
 
     public String getHashtagTitle() {
