@@ -42,13 +42,14 @@ public class TwitterSource implements Source<TwitterResponse> {
 	StatusListener listener = new StatusListener() {
 		@Override
 		public void onStatus(Status status) {
+			System.out.print("ID: " + status.getId());
 			System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
 
 			if (responses == null)
 				responses = new ArrayList<>();
 
 			currentResponse = new TwitterResponse(status.getId(), status.getFavoriteCount(), status.getRetweetCount(),
-					status.getUser().toString(), status.getText(), status.getCreatedAt().toString(),
+					status.getUser().getScreenName(), status.getText(), status.getCreatedAt().toString(),
 					status.getSource());
 		}
 

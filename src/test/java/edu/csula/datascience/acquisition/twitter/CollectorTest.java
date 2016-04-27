@@ -33,9 +33,9 @@ public class CollectorTest {
     public void mungee() throws Exception {
     	
     	Collection<TwitterModel> list = collector.mungee(source.next());
-        List<TwitterModel> expectedList = Lists.newArrayList(
-            new TwitterModel(1234, text)
-        );
+//        List<TwitterModel> expectedList = Lists.newArrayList(
+//            new TwitterModel(1234, text)
+//        );
 
         Assert.assertEquals(3, list.size());
 
@@ -44,4 +44,10 @@ public class CollectorTest {
 //            Assert.assertEquals(list.get(i).getText(), expectedList.get(i).getText());
 //        }
     }
+     
+    @Test
+    public void filterTweetId {
+    	
+    }
+    
 }
