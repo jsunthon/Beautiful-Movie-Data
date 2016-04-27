@@ -14,6 +14,7 @@ public class Movie {
         if (movieTitle != null) {
             hashtagTitle = "#" + title.replaceAll("\\s", "");
         }
+        year = 0;
     }
 
     public void setId(int id){

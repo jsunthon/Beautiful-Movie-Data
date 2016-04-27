@@ -54,6 +54,7 @@ public class CsvCollector implements Collector<Movie, Movie>{
 
             theMovie.setRating(averageRating);
             theMovie.setYear(year);
+            System.out.println(theMovie.getHashtagTitle());
             finalMovieEntry.add(theMovie);
         }
 

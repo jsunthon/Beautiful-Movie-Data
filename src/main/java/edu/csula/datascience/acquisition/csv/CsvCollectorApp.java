@@ -9,7 +9,7 @@ import java.util.Collection;
 public class CsvCollectorApp {
     public static void main(String[] args){
         //TODO add file
-        String file = "test.csv";
+        String file = "mergedMovieData.csv";
         CsvSource source = new CsvSource(file, true);
         CsvCollector collector = new CsvCollector();
 
@@ -17,7 +17,7 @@ public class CsvCollectorApp {
             Collection<Movie> movies = source.next();
             Collection<Movie> mungedMovies = collector.mungee(movies);
             ArrayList<Movie> munged = new ArrayList(mungedMovies);
-            if (!mungedMovies.isEmpty() && munged.get(0).getYear() > 1990){
+            if (!mungedMovies.isEmpty() && munged.get(0).getYear() > 2010){
                 collector.save(mungedMovies);
             }
             else{
