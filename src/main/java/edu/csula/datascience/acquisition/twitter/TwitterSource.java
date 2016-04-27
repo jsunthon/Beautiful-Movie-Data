@@ -28,14 +28,13 @@ public class TwitterSource implements Source<TwitterResponse> {
 		System.out.println("Streaming for tweets with " + query + " in the name.");
 		this.searchQuery = query;
 		this.totalDuration = duration;
-		startStream();		
+		startStream();
 	}
 
 	@Override
 	public boolean hasNext() {
 		long currentTime = System.currentTimeMillis();
 		long duration = currentTime - startTime;
-		//System.out.println("time it took so far: " + duration);
 		return duration < totalDuration;
 	}
 
@@ -46,10 +45,7 @@ public class TwitterSource implements Source<TwitterResponse> {
 
 			if (responses == null)
 				responses = new ArrayList<>();
-			
-//			responses.add(new TwitterResponse(status.getId(), status.getFavoriteCount(), status.getRetweetCount(),
-//					status.getUser().toString(), status.getText(), status.getCreatedAt().toString(),
-//					status.getSource()));
+
 			currentResponse = new TwitterResponse(status.getId(), status.getFavoriteCount(), status.getRetweetCount(),
 					status.getUser().toString(), status.getText(), status.getCreatedAt().toString(),
 					status.getSource());
@@ -77,6 +73,8 @@ public class TwitterSource implements Source<TwitterResponse> {
 
 		@Override
 		public void onException(Exception ex) {
+			System.out.println("Adding 10000 to totalDuration............");
+			totalDuration += 10000;
 			ex.printStackTrace();
 		}
 	};
@@ -86,11 +84,11 @@ public class TwitterSource implements Source<TwitterResponse> {
 		List<TwitterResponse> list = Lists.newArrayList();
 		if (currentResponse != null) {
 			list.add(currentResponse);
-			currentResponse = null; //reset the currentResponse
+			currentResponse = null; // reset the currentResponse
 		}
 		return list;
 	}
-	
+
 	public void startStream() {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		// cb.setDebugEnabled(true).setOAuthConsumerKey(System.getenv("TWITTER_CONSUMER_KEY"))
@@ -112,9 +110,9 @@ public class TwitterSource implements Source<TwitterResponse> {
 		tweetFilterQuery.language(new String[] { "en" });
 		twitterStream.filter(tweetFilterQuery);
 	}
-	
+
 	public void stopStream() {
-		twitterStream.cleanUp();
+		twitterStream.shutdown();
 	}
 
 	/**
