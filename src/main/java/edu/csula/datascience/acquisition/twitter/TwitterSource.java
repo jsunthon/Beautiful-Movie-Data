@@ -5,32 +5,93 @@ import com.google.common.collect.Lists;
 import edu.csula.datascience.acquisition.csv.Source;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 public class TwitterSource implements Source<TwitterResponse> {
-	private long minId;
+
 	private final String searchQuery;
 	private String TWITTER_CONSUMER_KEY = "KXjY39ROD2QMa0LUIkEBSnJMM";
 	private String TWITTER_CONSUMER_SECRET = "lX27EskdFXqFCYwQCo7zK8c7FT9NgL2YpDox0anq4U9g6SrOKG";
 	private String TWITTER_ACCESS_TOKEN = "722849671593402368-Fx0XHOaSsIyCQy0VJ6ZWnZ97TmWJ3CG";
 	private String TWITTER_ACCESS_SECRET = "ByBD930AcAK9Ue00PvWXMFQ3o7j4RSRSZXthz0rigzKOk";
+	private List<TwitterResponse> responses;
+	private TwitterResponse currentResponse;
+	TwitterStream twitterStream;
+	private long startTime = System.currentTimeMillis();
+	private long totalDuration;
 
-	public TwitterSource(long minId, String query) {
-		System.out.println(query);
-		this.minId = minId;
+	public TwitterSource(String query, long duration) {
+		System.out.println("Streaming for tweets with " + query + " in the name.");
 		this.searchQuery = query;
+		this.totalDuration = duration;
+		startStream();		
 	}
 
 	@Override
 	public boolean hasNext() {
-		return minId > 0;
+		long currentTime = System.currentTimeMillis();
+		long duration = currentTime - startTime;
+		System.out.println("time it took so far: " + duration);
+		return duration < totalDuration;
 	}
+
+	StatusListener listener = new StatusListener() {
+		@Override
+		public void onStatus(Status status) {
+			System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
+
+			if (responses == null)
+				responses = new ArrayList<>();
+			
+//			responses.add(new TwitterResponse(status.getId(), status.getFavoriteCount(), status.getRetweetCount(),
+//					status.getUser().toString(), status.getText(), status.getCreatedAt().toString(),
+//					status.getSource()));
+			currentResponse = new TwitterResponse(status.getId(), status.getFavoriteCount(), status.getRetweetCount(),
+					status.getUser().toString(), status.getText(), status.getCreatedAt().toString(),
+					status.getSource());
+		}
+
+		@Override
+		public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
+			System.out.println("Got a status deletion notice id:" + statusDeletionNotice.getStatusId());
+		}
+
+		@Override
+		public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
+			System.out.println("Got track limitation notice:" + numberOfLimitedStatuses);
+		}
+
+		@Override
+		public void onScrubGeo(long userId, long upToStatusId) {
+			System.out.println("Got scrub_geo event userId:" + userId + " upToStatusId:" + upToStatusId);
+		}
+
+		@Override
+		public void onStallWarning(StallWarning warning) {
+			System.out.println("Got stall warning:" + warning);
+		}
+
+		@Override
+		public void onException(Exception ex) {
+			ex.printStackTrace();
+		}
+	};
 
 	@Override
 	public Collection<TwitterResponse> next() {
 		List<TwitterResponse> list = Lists.newArrayList();
+		if (currentResponse != null) {
+			list.add(currentResponse);
+			currentResponse = null; //reset the currentResponse
+		}
+		return list;
+	}
+	
+	public void startStream() {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		// cb.setDebugEnabled(true).setOAuthConsumerKey(System.getenv("TWITTER_CONSUMER_KEY"))
 		// .setOAuthConsumerSecret(System.getenv("TWITTER_CONSUMER_SECRET"))
@@ -42,72 +103,23 @@ public class TwitterSource implements Source<TwitterResponse> {
 		cb.setDebugEnabled(true).setOAuthConsumerKey(TWITTER_CONSUMER_KEY)
 				.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET).setOAuthAccessToken(TWITTER_ACCESS_TOKEN)
 				.setOAuthAccessTokenSecret(TWITTER_ACCESS_SECRET);
-		TwitterFactory tf = new TwitterFactory(cb.build());
-		Twitter twitter = tf.getInstance();
 
-		Query query = new Query(searchQuery);
-		query.setCount(15);
-//		query.setLang("EN");
-//		query.setSince("2010-01-01");
-		if (minId != Long.MAX_VALUE) {
-			query.setMaxId(minId);
-		}
+		twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
+		twitterStream.addListener(listener);
 
-		list.addAll(getTweets(twitter, query));
-//		printText(list);
-		return list;
-	}
-
-	private List<TwitterResponse> getTweets(Twitter twitter, Query query) {
-		QueryResult result;
-		
-		List<TwitterResponse> list = Lists.newArrayList();
-		try {
-			do {
-//				try {
-//					Thread.sleep(5000);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-				result = twitter.search(query);
-				System.out.println("completed in " + result.getCompletedIn());
-				System.out.println("result page : " + result.getCount());
-				List<Status> tweets = result.getTweets();
-				System.out.println("First Twitter API Call, size of list: " + tweets.size());
-				
-				if (tweets.size() <= 1) {
-					minId = 0;
-					return list;
-				}
-				
-				for (Status tweet : tweets) {
-					System.out.println("text: " + tweet.getText());
-					System.out.println("id: " + tweet.getId());
-					minId = Math.min(minId, tweet.getId());
-					list.add(new TwitterResponse(tweet.getId(), tweet.getFavoriteCount(), tweet.getRetweetCount(),
-							tweet.getUser().getName(), tweet.getText(), tweet.getCreatedAt().toString(), tweet.getSource()));
-				}
-
-			} while ((query = result.nextQuery()) != null);
-		} catch (TwitterException e) {
-			// Catch exception to handle rate limit and retry
-			e.printStackTrace();
-			System.out.println("Got twitter exception. Current min id " + minId);
-			try {
-				Thread.sleep(e.getRateLimitStatus().getSecondsUntilReset() * 1000);
-				list.addAll(getTweets(twitter, query));
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-		}
-
-		return list;
+		FilterQuery tweetFilterQuery = new FilterQuery();
+		tweetFilterQuery.track(new String[] { searchQuery });
+		tweetFilterQuery.language(new String[] { "en" });
+		twitterStream.filter(tweetFilterQuery);
 	}
 	
+	public void stopStream() {
+		twitterStream.cleanUp();
+	}
+
 	/**
 	 * Helper methods
-	 */	
+	 */
 	public void printText(Collection<TwitterResponse> list) {
 		Iterator<TwitterResponse> iterator = list.iterator();
 		while (iterator.hasNext()) {
