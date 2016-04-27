@@ -1,35 +1,39 @@
 package edu.csula.datascience.acquisition.csv;
 
-import java.io.BufferedReader;
+
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import au.com.bytecode.opencsv.CSV;
 
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
 import edu.csula.datascience.acquisition.Movie;
 
 
 public class CsvSource implements Source<Movie>{
-    private CSVReader cr1, cr2;
+    private CsvParser cp1, cp2;
     private final String DELIMITER = ",";
     private String line[];
+    private CsvParserSettings settings = new CsvParserSettings();
 
     public CsvSource(String fileName, boolean hasHeader){
         try {
+            settings.getFormat().setLineSeparator("\n");
             File file = new File(ClassLoader.getSystemResource(fileName).toURI());
-            cr1 = new CSVReader(new FileReader(file));
-            cr2 = new CSVReader(new FileReader(file));
+            cp1 = new CsvParser(settings);
+            cp2 = new CsvParser(settings);
+
+            cp1.beginParsing(file);
+            cp2.beginParsing(file);
 
             //skips header of csv file
             if (hasHeader) {
-                line = cr1.readNext();
-                line = cr2.readNext();
+                line = cp1.parseNext();
+                line = cp2.parseNext();
             }
             //puts br2 1 line ahead;
-            line = cr2.readNext();
+            line = cp2.parseNext();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -52,7 +56,7 @@ public class CsvSource implements Source<Movie>{
         try {
             do{
                 counter++;
-                line = cr1.readNext();
+                line = cp1.parseNext();
                 try {
                     rating += Double.parseDouble(line[4]);
                 } catch(Exception e){
@@ -60,7 +64,7 @@ public class CsvSource implements Source<Movie>{
                 tokens = line;
 
                 //check if next entry
-                line = cr2.readNext();
+                line = cp2.parseNext();
                 if (line == null || !line[0].equals(tokens[0])){
                     break;
                 }
