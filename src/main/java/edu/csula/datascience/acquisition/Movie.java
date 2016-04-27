@@ -12,7 +12,7 @@ public class Movie {
         id = movieID;
         title = movieTitle;
         if (movieTitle != null) {
-            hashtagTitle = "#" + title.replaceAll("\\s", "");
+            hashtagTitle = title.replaceAll("\\s", "");
         }
         year = 0;
     }
@@ -31,7 +31,7 @@ public class Movie {
 
     public void setTitle(String title) {
         this.title = title;
-        hashtagTitle = "#" + title.replaceAll("\\s","");
+        hashtagTitle = title.replaceAll("\\s","");
     }
 
     public String getHashtagTitle() {

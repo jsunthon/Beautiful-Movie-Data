@@ -54,7 +54,7 @@ public class CsvCollector implements Collector<Movie, Movie>{
 
             theMovie.setRating(averageRating);
             theMovie.setYear(year);
-            System.out.println(theMovie.getHashtagTitle());
+            //System.out.println(theMovie.getHashtagTitle()); //removed, used to check what movies are getting saved
             finalMovieEntry.add(theMovie);
         }
 
