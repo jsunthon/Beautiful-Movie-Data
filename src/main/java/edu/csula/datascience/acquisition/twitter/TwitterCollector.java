@@ -32,11 +32,9 @@ public class TwitterCollector implements Collector<TwitterResponse, TwitterRespo
 	@Override
 	public Collection<TwitterResponse> mungee(Collection<TwitterResponse> src) {
 
-		// sets remove duplicates based on the equals() and hashCode() method of
-		// TwitterResponse
 		Set<TwitterResponse> noDups = new HashSet<TwitterResponse>(src);
-//		System.out.println("Calling mungee...");
-//		TweetAnalysis.printText(noDups);
+		System.out.println("Calling printText...\n" );
+		TweetAnalysis.printText(noDups);
 		return noDups;
 	}
 
@@ -45,7 +43,7 @@ public class TwitterCollector implements Collector<TwitterResponse, TwitterRespo
 		
 		if (data.size() == 0 || data == null) return;
 		
-		System.out.println("Data size in saved method" + data.size());
+		System.out.println("Data size in saved method: " + data.size());
 		List<Document> documents = data.stream()
 				.map(item -> new Document().append("tweetId", item.getId()).append("favCt", item.getFavCt())
 						.append("retwtCt", item.getRetwtCt()).append("username", item.getUserName())

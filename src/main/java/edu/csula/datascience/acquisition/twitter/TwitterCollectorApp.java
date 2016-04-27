@@ -5,22 +5,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class TwitterCollectorApp {
-    public static void main(String[] args) {
-        TwitterSource source = new TwitterSource(Long.MAX_VALUE, "#forceawakens");
-        TwitterCollector collector = new TwitterCollector();
-   
-        
-//        twitter has a limit on how many calls you can make. comment this code out
-//        if you want to stop the calls
-        while (source.hasNext()) {
-            Collection<TwitterResponse> tweets = source.next();
-            Collection<TwitterResponse> cleanedTweets = collector.mungee(tweets); //returns a collection with all duplicates removed
-            collector.save(cleanedTweets);
-        }
-                
-//        //create a MongoUtilities object to test that the results are saved
-//        MongoUtilities mongoUtil = new MongoUtilities("movie-data", "tweets");
-//        mongoUtil.printDocuments();
-    }
-      
+	public static void main(String[] args) {
+		
+		/**
+		 * second argument is the amount of time to start streaming.it's in ms,
+		 * so for example, 15000 is 15 seconds. 1000 is 1 second, ect.
+		 */
+		TwitterSource source = new TwitterSource("starwars", 10000);
+		TwitterCollector collector = new TwitterCollector();
+		Set<TwitterResponse> initResponses = new HashSet<TwitterResponse>();
+
+		while (source.hasNext()) {
+			Collection<TwitterResponse> tweets = source.next();
+			if (tweets.size() != 0) {
+				initResponses.addAll(tweets);
+			}
+		}		
+		source.stopStream();
+		Collection<TwitterResponse> cleanedTweets = collector.mungee(initResponses);
+		collector.save(cleanedTweets);
+	}
 }
