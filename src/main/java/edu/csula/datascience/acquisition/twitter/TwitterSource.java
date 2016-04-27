@@ -35,7 +35,7 @@ public class TwitterSource implements Source<TwitterResponse> {
 	public boolean hasNext() {
 		long currentTime = System.currentTimeMillis();
 		long duration = currentTime - startTime;
-		System.out.println("time it took so far: " + duration);
+		//System.out.println("time it took so far: " + duration);
 		return duration < totalDuration;
 	}
 
