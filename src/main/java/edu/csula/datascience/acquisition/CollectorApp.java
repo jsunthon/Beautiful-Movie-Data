@@ -9,11 +9,13 @@ import edu.csula.datascience.utilities.MongoUtilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CollectorApp {
     public static void main(String[] args){
         //TODO add file
-        String file = "mergedMovieData.csv";
+        String file = "test.csv";
         CsvSource source = new CsvSource(file, true);
         CsvCollector collector = new CsvCollector();
 
@@ -21,21 +23,22 @@ public class CollectorApp {
             Collection<Movie> movies = source.next();
             Collection<Movie> mungedMovies = collector.mungee(movies);
             ArrayList<Movie> munged = new ArrayList(mungedMovies);
-            if (!mungedMovies.isEmpty() && munged.get(0).getYear() > 1990){
+            if (!mungedMovies.isEmpty() && munged.get(0).getYear() > 2010){
                 collector.save(mungedMovies);
 
-                //retrieving twitter data based on csv file
-                TwitterSource tSource = new TwitterSource(munged.get(0).getHashtagTitle(), 10000);
-                TwitterCollector tCollector = new TwitterCollector();
+                TwitterSource tsource = new TwitterSource(munged.get(0).getHashtagTitle(), 10000);
+        		TwitterCollector tcollector = new TwitterCollector();
+        		Set<TwitterResponse> initResponses = new HashSet<TwitterResponse>();
 
-
-                //twitter has a limit on how many calls you can make. comment this code out
-                //if you want to stop the calls
-                while (tSource.hasNext()) {
-                    Collection<TwitterResponse> tweets = tSource.next();
-                    Collection<TwitterResponse> cleanedTweets = tCollector.mungee(tweets); //returns a collection with all duplicates removed
-                    tCollector.save(cleanedTweets);
-                }
+        		while (tsource.hasNext()) {
+        			Collection<TwitterResponse> tweets = tsource.next();
+        			if (tweets.size() != 0) {
+        				initResponses.addAll(tweets);
+        			}
+        		}		
+        		tsource.stopStream();
+        		Collection<TwitterResponse> cleanedTweets = tcollector.mungee(initResponses);
+        		tcollector.save(cleanedTweets);
             }
             else{
                 continue;
