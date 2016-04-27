@@ -1,4 +1,4 @@
-package edu.csula.datascience.acquisition.twitter;
+package edu.csula.datascience.acquisition.model;
 
 public class TwitterResponse {
 	private long id;

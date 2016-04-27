@@ -2,7 +2,8 @@ package edu.csula.datascience.acquisition.twitter;
 
 import com.google.common.collect.Lists;
 
-import edu.csula.datascience.acquisition.csv.Source;
+import edu.csula.datascience.acquisition.Source;
+import edu.csula.datascience.acquisition.model.TwitterResponse;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 

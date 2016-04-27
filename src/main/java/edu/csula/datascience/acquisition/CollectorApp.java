@@ -2,8 +2,9 @@ package edu.csula.datascience.acquisition;
 
 import edu.csula.datascience.acquisition.csv.CsvCollector;
 import edu.csula.datascience.acquisition.csv.CsvSource;
+import edu.csula.datascience.acquisition.model.Movie;
+import edu.csula.datascience.acquisition.model.TwitterResponse;
 import edu.csula.datascience.acquisition.twitter.TwitterCollector;
-import edu.csula.datascience.acquisition.twitter.TwitterResponse;
 import edu.csula.datascience.acquisition.twitter.TwitterSource;
 import java.util.ArrayList;
 import java.util.Collection;

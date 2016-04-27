@@ -1,6 +1,6 @@
 package edu.csula.datascience.acquisition.csv;
 
-import edu.csula.datascience.acquisition.Movie;
+import edu.csula.datascience.acquisition.model.Movie;
 import edu.csula.datascience.utilities.MongoUtilities;
 
 import java.util.ArrayList;

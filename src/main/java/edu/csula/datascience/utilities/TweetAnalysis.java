@@ -3,7 +3,7 @@ package edu.csula.datascience.utilities;
 import java.util.Collection;
 import java.util.Iterator;
 
-import edu.csula.datascience.acquisition.twitter.TwitterResponse;
+import edu.csula.datascience.acquisition.model.TwitterResponse;
 
 public class TweetAnalysis {
 	/**

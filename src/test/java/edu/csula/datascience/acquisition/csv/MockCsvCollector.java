@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.csula.datascience.acquisition.Collector;
+
 /**
  * A mock implementation of collector for testing
  */

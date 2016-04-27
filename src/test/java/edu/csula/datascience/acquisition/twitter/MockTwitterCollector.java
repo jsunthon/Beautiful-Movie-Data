@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.csula.datascience.acquisition.csv.Collector;
+import edu.csula.datascience.acquisition.Collector;
 
 /**
  * A mock implementation of collector for testing
