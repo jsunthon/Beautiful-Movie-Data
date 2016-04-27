@@ -2,8 +2,8 @@ package edu.csula.datascience.acquisition.csv;
 
 import com.google.common.collect.Lists;
 
-import edu.csula.datascience.acquisition.Movie;
-import edu.csula.datascience.acquisition.csv.Source;
+import edu.csula.datascience.acquisition.Source;
+import edu.csula.datascience.acquisition.model.Movie;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.csula.datascience.acquisition.model.TwitterResponse;
+
 public class TwitterCollectorApp {
 	public static void main(String[] args) {
 		

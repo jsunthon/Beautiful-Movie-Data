@@ -1,4 +1,4 @@
-package edu.csula.datascience.acquisition.csv;
+package edu.csula.datascience.acquisition;
 
 import java.util.Collection;
 

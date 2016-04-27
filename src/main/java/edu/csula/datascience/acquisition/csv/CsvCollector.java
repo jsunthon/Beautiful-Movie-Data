@@ -4,7 +4,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-import edu.csula.datascience.acquisition.Movie;
+import edu.csula.datascience.acquisition.Collector;
+import edu.csula.datascience.acquisition.model.Movie;
 
 import org.bson.Document;
 

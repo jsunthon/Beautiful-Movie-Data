@@ -1,4 +1,4 @@
-package edu.csula.datascience.acquisition;
+package edu.csula.datascience.acquisition.model;
 
 public class Movie {
     private int id, year;

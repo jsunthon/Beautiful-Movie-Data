@@ -4,7 +4,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-import edu.csula.datascience.acquisition.csv.Collector;
+import edu.csula.datascience.acquisition.Collector;
+import edu.csula.datascience.acquisition.model.TwitterResponse;
 import edu.csula.datascience.utilities.TweetAnalysis;
 
 import org.bson.Document;

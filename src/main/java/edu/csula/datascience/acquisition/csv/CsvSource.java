@@ -8,7 +8,9 @@ import java.util.Collection;
 
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-import edu.csula.datascience.acquisition.Movie;
+
+import edu.csula.datascience.acquisition.Source;
+import edu.csula.datascience.acquisition.model.Movie;
 
 
 public class CsvSource implements Source<Movie>{
