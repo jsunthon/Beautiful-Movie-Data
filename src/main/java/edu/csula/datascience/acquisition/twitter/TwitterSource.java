@@ -26,9 +26,13 @@ public class TwitterSource implements Source<TwitterResponse> {
 	private long totalDuration;
 
 	public TwitterSource(String[] query, long duration) {
-		System.out.println("Streaming for tweets with " + query.toString() + " in the name.");
 		this.searchQuery = query;
 		this.totalDuration = duration;
+		try {
+			printQueryString(searchQuery);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		startStream();
 	}
 
@@ -74,8 +78,6 @@ public class TwitterSource implements Source<TwitterResponse> {
 
 		@Override
 		public void onException(Exception ex) {
-			System.out.println("Adding 10000 to totalDuration............");
-			totalDuration += 10000;
 			ex.printStackTrace();
 		}
 	};
@@ -124,5 +126,14 @@ public class TwitterSource implements Source<TwitterResponse> {
 		while (iterator.hasNext()) {
 			System.out.println(iterator.next().getText());
 		}
+	}
+	
+	public void printQueryString(String[] query) throws InterruptedException {
+		System.out.println("Query string: ");
+		for (int i = 0; i < query.length; i++) {
+			System.out.println(query[i]);
+		}
+		
+		Thread.sleep(5000);
 	}
 }
