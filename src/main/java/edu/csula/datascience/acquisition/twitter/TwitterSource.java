@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TwitterSource implements Source<TwitterResponse> {
 
-	private final String searchQuery;
+	private final String[] searchQuery;
 	private String TWITTER_CONSUMER_KEY = "KXjY39ROD2QMa0LUIkEBSnJMM";
 	private String TWITTER_CONSUMER_SECRET = "lX27EskdFXqFCYwQCo7zK8c7FT9NgL2YpDox0anq4U9g6SrOKG";
 	private String TWITTER_ACCESS_TOKEN = "722849671593402368-Fx0XHOaSsIyCQy0VJ6ZWnZ97TmWJ3CG";
@@ -25,8 +25,8 @@ public class TwitterSource implements Source<TwitterResponse> {
 	private long startTime = System.currentTimeMillis();
 	private long totalDuration;
 
-	public TwitterSource(String query, long duration) {
-		System.out.println("Streaming for tweets with " + query + " in the name.");
+	public TwitterSource(String[] query, long duration) {
+		System.out.println("Streaming for tweets with " + query.toString() + " in the name.");
 		this.searchQuery = query;
 		this.totalDuration = duration;
 		startStream();
@@ -107,7 +107,7 @@ public class TwitterSource implements Source<TwitterResponse> {
 		twitterStream.addListener(listener);
 
 		FilterQuery tweetFilterQuery = new FilterQuery();
-		tweetFilterQuery.track(new String[] { searchQuery });
+		tweetFilterQuery.track(searchQuery);
 		tweetFilterQuery.language(new String[] { "en" });
 		twitterStream.filter(tweetFilterQuery);
 	}
