@@ -19,7 +19,12 @@ public class TwitterCollector implements Collector<TwitterResponse, TwitterRespo
 	MongoClient mongoClient;
 	MongoDatabase database;
 	MongoCollection<Document> collection;
-
+	String query;
+	
+	public TwitterCollector(String query){
+		this.query = query;
+	}
+	
 	public TwitterCollector() {
 		// establish database connection to MongoDB
 		mongoClient = new MongoClient();
@@ -28,12 +33,19 @@ public class TwitterCollector implements Collector<TwitterResponse, TwitterRespo
 
 		// select collection by name `tweets`
 		collection = database.getCollection("tweets");
+		
 	}
 
 	@Override
 	public Collection<TwitterResponse> mungee(Collection<TwitterResponse> src) {
-
-		Set<TwitterResponse> noDups = new HashSet<TwitterResponse>(src);
+		Set<TwitterResponse> cleanTexts = new HashSet<TwitterResponse>();
+		for(TwitterResponse tr: src){
+			if(!tr.getText().contains("@"+query))
+			{
+				cleanTexts.add(tr);
+			}
+		}
+		Set<TwitterResponse> noDups = new HashSet<TwitterResponse>(cleanTexts);
 		System.out.println("Calling printText...\n" );
 		TweetAnalysis.printText(noDups);
 		return noDups;
