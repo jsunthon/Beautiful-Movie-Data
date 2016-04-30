@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TwitterSource implements Source<TwitterResponse> {
 
-	private final String searchQuery;
+	private final String[] searchQuery;
 	private String TWITTER_CONSUMER_KEY = "KXjY39ROD2QMa0LUIkEBSnJMM";
 	private String TWITTER_CONSUMER_SECRET = "lX27EskdFXqFCYwQCo7zK8c7FT9NgL2YpDox0anq4U9g6SrOKG";
 	private String TWITTER_ACCESS_TOKEN = "722849671593402368-Fx0XHOaSsIyCQy0VJ6ZWnZ97TmWJ3CG";
@@ -25,10 +25,14 @@ public class TwitterSource implements Source<TwitterResponse> {
 	private long startTime = System.currentTimeMillis();
 	private long totalDuration;
 
-	public TwitterSource(String query, long duration) {
-		System.out.println("Streaming for tweets with " + query + " in the name.");
+	public TwitterSource(String[] query, long duration) {
 		this.searchQuery = query;
 		this.totalDuration = duration;
+		try {
+			printQueryString(searchQuery);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		startStream();
 	}
 
@@ -74,8 +78,6 @@ public class TwitterSource implements Source<TwitterResponse> {
 
 		@Override
 		public void onException(Exception ex) {
-			System.out.println("Adding 10000 to totalDuration............");
-			totalDuration += 10000;
 			ex.printStackTrace();
 		}
 	};
@@ -107,7 +109,7 @@ public class TwitterSource implements Source<TwitterResponse> {
 		twitterStream.addListener(listener);
 
 		FilterQuery tweetFilterQuery = new FilterQuery();
-		tweetFilterQuery.track(new String[] { searchQuery });
+		tweetFilterQuery.track(searchQuery);
 		tweetFilterQuery.language(new String[] { "en" });
 		twitterStream.filter(tweetFilterQuery);
 	}
@@ -124,5 +126,14 @@ public class TwitterSource implements Source<TwitterResponse> {
 		while (iterator.hasNext()) {
 			System.out.println(iterator.next().getText());
 		}
+	}
+	
+	public void printQueryString(String[] query) throws InterruptedException {
+		System.out.println("Query string: ");
+		for (int i = 0; i < query.length; i++) {
+			System.out.println(query[i]);
+		}
+		
+		Thread.sleep(5000);
 	}
 }
