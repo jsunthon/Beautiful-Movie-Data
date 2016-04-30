@@ -29,7 +29,7 @@ public class MockTwitterCollector implements Collector<TwitterModel, MockTwitter
 				cleanTexts.add(tr);
 			}
 		}
-        Set<TwitterModel> noDups = new HashSet<TwitterModel>(newSrc);
+        Set<TwitterModel> noDups = new HashSet<TwitterModel>(cleanTexts);
 		return noDups;
     }
 
