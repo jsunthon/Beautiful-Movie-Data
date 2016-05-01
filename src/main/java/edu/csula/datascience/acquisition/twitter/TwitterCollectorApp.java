@@ -13,8 +13,9 @@ public class TwitterCollectorApp {
 		 * second argument is the amount of time to start streaming.it's in ms,
 		 * so for example, 15000 is 15 seconds. 1000 is 1 second, ect.
 		 */
-		TwitterSource source = new TwitterSource(new String[]{"ChildrenWhoChaseLostVoice"}, 10000);
-		TwitterCollector collector = new TwitterCollector();
+		String []query = {"ChildrenWhoChaseLostVoice"};
+		TwitterSource source = new TwitterSource(query, 10000);
+		TwitterCollector collector = new TwitterCollector(query);
 		Set<TwitterResponse> initResponses = new HashSet<TwitterResponse>();
 
 		while (source.hasNext()) {

@@ -69,7 +69,16 @@ public class MockTwitterSource implements Source<MockTwitterData> {
             		"HI!!!!!!",
             		"Wed Apr 27 14:40:01 PDT 2016",
             		"<a href=\"http://twitter.com/download/iphone\""
-            		+ " rel=\"nofollow\">Twitter for iPhone</a>")            
+            		+ " rel=\"nofollow\">Twitter for iPhone</a>"),
+            new MockTwitterData(
+            		Long.valueOf("725439389501902850"),
+            		0,
+            		1,
+            		"tim_cook",
+            		"@sunny The weather is sunny today!!",
+            		"Wed Apr 27 14:40:01 PDT 2016",
+            		"<a href=\"http://twitter.com/download/iphone\""
+            		+ " rel=\"nofollow\">Twitter for iPhone</a>") 
         );
     }
 }

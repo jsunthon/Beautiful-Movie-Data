@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import edu.csula.datascience.acquisition.Collector;
+import edu.csula.datascience.acquisition.model.TwitterResponse;
 
 /**
  * A mock implementation of collector for testing
@@ -20,7 +21,16 @@ public class MockTwitterCollector implements Collector<TwitterModel, MockTwitter
             .map(TwitterModel::build)
             .collect(Collectors.toList());
         
-        Set<TwitterModel> noDups = new HashSet<TwitterModel>(newSrc);
+        Set<TwitterModel> cleanTexts = new HashSet<TwitterModel>();
+        String []query = {"sunny"};
+		for(TwitterModel tr: newSrc){
+			for(int i=0; i< query.length; i++)
+			if(!tr.getText().contains("@"+query[i]))
+			{
+				cleanTexts.add(tr);
+			}
+		}
+        Set<TwitterModel> noDups = new HashSet<TwitterModel>(cleanTexts);
 		return noDups;
     }
 
