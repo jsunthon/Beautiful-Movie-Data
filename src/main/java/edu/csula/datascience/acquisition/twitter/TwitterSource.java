@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class TwitterSource implements Source<TwitterResponse> {
-	
+
 	private String TWITTER_CONSUMER_KEY = "KXjY39ROD2QMa0LUIkEBSnJMM";
 	private String TWITTER_CONSUMER_SECRET = "lX27EskdFXqFCYwQCo7zK8c7FT9NgL2YpDox0anq4U9g6SrOKG";
 	private String TWITTER_ACCESS_TOKEN = "722849671593402368-Fx0XHOaSsIyCQy0VJ6ZWnZ97TmWJ3CG";
@@ -24,16 +25,16 @@ public class TwitterSource implements Source<TwitterResponse> {
 	private Producer twitterProd;
 	private Consumer twitterCons;
 	private BlockingQueue<TwitterResponse> twitterQueue;
-	private List<TwitterResponse> twitterResponses;
+	private Stack<TwitterResponse> twitterResponses;
 
 	private long startTime = System.currentTimeMillis();
 	private long totalDuration;
 
 	public TwitterSource(String[] query, long duration) {
 		this.twitterSearchQuery = query;
-		this.totalDuration = duration;
 		this.twitterQueue = new LinkedBlockingQueue<TwitterResponse>();
-		this.twitterResponses = new ArrayList<TwitterResponse>();
+		this.twitterResponses = new Stack<TwitterResponse>();
+		this.totalDuration = duration;
 
 		try {
 			printQueryString(twitterSearchQuery);
@@ -57,6 +58,18 @@ public class TwitterSource implements Source<TwitterResponse> {
 		long duration = currentTime - startTime;
 		return duration < totalDuration;
 	}
+	
+	@Override
+	public Collection<TwitterResponse> next() {
+		List<TwitterResponse> finalResponses = new ArrayList<>();
+		if (!twitterResponses.isEmpty())
+			finalResponses.add(twitterResponses.pop()); // size of one
+		return finalResponses;
+	}
+
+	public void stopStream() {
+		twitterStream.cleanUp();
+	}
 
 	class Producer extends Thread {
 		private BlockingQueue<TwitterResponse> sharedTwitterQueue;
@@ -69,9 +82,8 @@ public class TwitterSource implements Source<TwitterResponse> {
 						sharedTwitterQueue.put(new TwitterResponse(status.getId(), status.getFavoriteCount(),
 								status.getRetweetCount(), status.getUser().getScreenName(), status.getText(),
 								status.getCreatedAt().toString(), status.getSource()));
-						System.out.println(
-								"PRODUCED TWEET: @" + status.getUser().getScreenName() + " - " + status.getText());
-						Thread.sleep(200);
+//						System.out.println(
+//								"PRODUCED TWEET: @" + status.getUser().getScreenName() + " - " + status.getText());
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -143,7 +155,7 @@ public class TwitterSource implements Source<TwitterResponse> {
 			try {
 				while (true) {
 					TwitterResponse tweet = sharedTwitterQueue.take();
-					twitterResponses.add(tweet);
+					twitterResponses.push(tweet);
 					System.out.println("CONSUMED TWEET: @" + tweet.getUserName() + " - " + tweet.getText());
 				}
 			} catch (InterruptedException e) {
@@ -151,19 +163,6 @@ public class TwitterSource implements Source<TwitterResponse> {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	@Override
-	public Collection<TwitterResponse> next() {
-		List<TwitterResponse> finalResponses = new ArrayList<>();
-		if (!hasNext()) {
-			finalResponses = twitterResponses;
-		}
-		return finalResponses;
-	}
-
-	public void stopStream() {
-		twitterStream.cleanUp();
 	}
 
 	/**

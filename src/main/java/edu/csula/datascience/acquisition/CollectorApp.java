@@ -43,7 +43,7 @@ public class CollectorApp {
 	}
 	
 	private void startTwitterStream(List<String> mungedMoviesTitles) {
-		long streamDuration = 60000; //listen for 2 hours
+		long streamDuration = 120000; //listen for 2 hours
 		
 		String[] searchQueries = mungedMoviesTitles.toArray(new String[mungedMoviesTitles.size()]);
 		TwitterSource source = new TwitterSource(searchQueries, streamDuration);
