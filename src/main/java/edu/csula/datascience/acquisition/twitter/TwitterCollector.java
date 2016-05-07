@@ -27,7 +27,7 @@ public class TwitterCollector implements Collector<TwitterResponse, TwitterRespo
 		database = mongoClient.getDatabase("movie-data");
 
 		// select collection by name `tweets`
-		collection = database.getCollection("tweets");
+		collection = database.getCollection("new_tweets");
 	}
 
 	@Override
