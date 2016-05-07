@@ -43,15 +43,14 @@ public class CollectorApp {
 	}
 	
 	private void startTwitterStream(List<String> mungedMoviesTitles) {
-		long streamDuration = 7200000; //listen for 2 hours
+		long streamDuration = 60000; //listen for 2 hours
 		
-		//this will contain an array of movie titles, each of which the TwitterStream API will listen for.
 		String[] searchQueries = mungedMoviesTitles.toArray(new String[mungedMoviesTitles.size()]);
-		System.out.println("munged movie titles size: " + searchQueries.length);
 		TwitterSource source = new TwitterSource(searchQueries, streamDuration);
-		TwitterCollector collector = new TwitterCollector();
-		
+		TwitterCollector collector = new TwitterCollector();		
 		Set<TwitterResponse> initResponses = new HashSet<TwitterResponse>();
+		
+		source.startConsuming();
 		
 		while (source.hasNext()) {
 			Collection<TwitterResponse> tweets = source.next();
@@ -61,7 +60,7 @@ public class CollectorApp {
 		}
 		
 		source.stopStream();
-		Collection<TwitterResponse> cleanedTweets = collector.mungee(initResponses); //mungee all the tweets we got
+		Collection<TwitterResponse> cleanedTweets = collector.mungee(initResponses);
 		collector.save(cleanedTweets); //then save the collection		
 	}
 }
