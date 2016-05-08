@@ -27,14 +27,10 @@ public class TwitterSource implements Source<TwitterResponse> {
 	private BlockingQueue<TwitterResponse> twitterQueue;
 	private Stack<TwitterResponse> twitterResponses;
 
-	private long startTime = System.currentTimeMillis();
-	private long totalDuration;
-
-	public TwitterSource(String[] query, long duration) {
+	public TwitterSource(String[] query) {
 		this.twitterSearchQuery = query;
 		this.twitterQueue = new LinkedBlockingQueue<TwitterResponse>();
 		this.twitterResponses = new Stack<TwitterResponse>();
-		this.totalDuration = duration;
 
 		try {
 			printQueryString(twitterSearchQuery);
@@ -51,19 +47,15 @@ public class TwitterSource implements Source<TwitterResponse> {
 		twitterCons.start();
 	}
 
-	// Return true if the time limit is not up yet
 	@Override
 	public boolean hasNext() {
-		long currentTime = System.currentTimeMillis();
-		long duration = currentTime - startTime;
-		return duration < totalDuration;
+		return (!twitterResponses.isEmpty());
 	}
-	
+
 	@Override
 	public Collection<TwitterResponse> next() {
 		List<TwitterResponse> finalResponses = new ArrayList<>();
-		if (!twitterResponses.isEmpty())
-			finalResponses.add(twitterResponses.pop()); // size of one
+		finalResponses.add(twitterResponses.pop());
 		return finalResponses;
 	}
 
@@ -77,16 +69,15 @@ public class TwitterSource implements Source<TwitterResponse> {
 		StatusListener listener = new StatusListener() {
 			@Override
 			public void onStatus(Status status) {
-				if (validateNulls(status)) {
-					try {
-						sharedTwitterQueue.put(new TwitterResponse(status.getId(), status.getFavoriteCount(),
-								status.getRetweetCount(), status.getUser().getScreenName(), status.getText(),
-								status.getCreatedAt().toString(), status.getSource()));
-//						System.out.println(
-//								"PRODUCED TWEET: @" + status.getUser().getScreenName() + " - " + status.getText());
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+				try {
+					sharedTwitterQueue.put(new TwitterResponse(status.getId(), status.getFavoriteCount(),
+							status.getRetweetCount(), status.getUser().getScreenName(), status.getText(),
+							status.getCreatedAt().toString(), status.getSource()));
+					// System.out.println(
+					// "PRODUCED TWEET: @" + status.getUser().getScreenName() +
+					// " - " + status.getText());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
 
@@ -181,10 +172,5 @@ public class TwitterSource implements Source<TwitterResponse> {
 			System.out.println(query[i]);
 		}
 		Thread.sleep(2000);
-	}
-
-	private boolean validateNulls(Status status) {
-		return (status.getUser().getScreenName() != null && status.getText() != null
-				&& status.getCreatedAt().toString() != null && status.getSource() != null);
 	}
 }
