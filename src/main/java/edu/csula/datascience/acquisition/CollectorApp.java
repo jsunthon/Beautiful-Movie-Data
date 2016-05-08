@@ -42,25 +42,18 @@ public class CollectorApp {
 		if (mungedMoviesTitles.size() != 0) startTwitterStream(mungedMoviesTitles);
 	}
 	
-	private void startTwitterStream(List<String> mungedMoviesTitles) {
-		long streamDuration = 120000; //listen for 2 hours
-		
+	private void startTwitterStream(List<String> mungedMoviesTitles) {		
 		String[] searchQueries = mungedMoviesTitles.toArray(new String[mungedMoviesTitles.size()]);
-		TwitterSource source = new TwitterSource(searchQueries, streamDuration);
+		TwitterSource source = new TwitterSource(searchQueries);
 		TwitterCollector collector = new TwitterCollector();		
-		Set<TwitterResponse> initResponses = new HashSet<TwitterResponse>();
-		
 		source.startConsuming();
 		
-		while (source.hasNext()) {
-			Collection<TwitterResponse> tweets = source.next();
-			if (tweets.size() != 0) {
-				initResponses.addAll(tweets);
+		while (true) {
+			if (source.hasNext()) {
+				Collection<TwitterResponse> initResponses = source.next();
+				Collection<TwitterResponse> cleanedTweets = collector.mungee(initResponses);
+				collector.save(cleanedTweets);
 			}
-		}
-		
-		source.stopStream();
-		Collection<TwitterResponse> cleanedTweets = collector.mungee(initResponses);
-		collector.save(cleanedTweets); //then save the collection		
+		}			
 	}
 }
