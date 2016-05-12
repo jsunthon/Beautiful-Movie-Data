@@ -7,8 +7,11 @@ import com.mongodb.client.MongoDatabase;
 import edu.csula.datascience.acquisition.Collector;
 import edu.csula.datascience.acquisition.model.TwitterResponse;
 import edu.csula.datascience.utilities.TweetAnalysis;
+import twitter4j.Status;
 
 import org.bson.Document;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -21,22 +24,21 @@ public class TwitterCollector implements Collector<TwitterResponse, TwitterRespo
 	MongoCollection<Document> collection;
 
 	public TwitterCollector() {
-		// establish database connection to MongoDB
 		mongoClient = new MongoClient();
-
 		database = mongoClient.getDatabase("movie-data");
-
-		// select collection by name `tweets`
 		collection = database.getCollection("tweets");
 	}
 
 	@Override
 	public Collection<TwitterResponse> mungee(Collection<TwitterResponse> src) {
-
-		Set<TwitterResponse> noDups = new HashSet<TwitterResponse>(src);
-		System.out.println("Calling printText...\n" );
-		TweetAnalysis.printText(noDups);
-		return noDups;
+		
+		List<TwitterResponse> tweet = (ArrayList<TwitterResponse>) src;
+		if (validateNulls(tweet.get(0)))  {
+			System.out.println("Successfully mungee " + tweet.get(0));
+			return tweet;
+		}
+		
+		return new ArrayList<TwitterResponse>();
 	}
 
 	@Override
@@ -53,6 +55,11 @@ public class TwitterCollector implements Collector<TwitterResponse, TwitterRespo
 				.collect(Collectors.toList());
 
 		collection.insertMany(documents);
+	}
+	
+	private boolean validateNulls(TwitterResponse tweet) {
+		return (tweet.getUserName() != null && tweet.getText() != null
+				&& tweet.getDate() != null && tweet.getSource() != null);
 	}
 
 }
