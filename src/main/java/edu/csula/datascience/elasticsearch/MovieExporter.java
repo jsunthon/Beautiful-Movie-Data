@@ -1,38 +1,28 @@
 package edu.csula.datascience.elasticsearch;
 
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-
 import org.bson.Document;
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.node.Node;
 import com.google.gson.Gson;
 import com.mongodb.client.MongoCursor;
 import edu.csula.datascience.utilities.MongoUtilities;
 
-public class MovieExporter {
+public class MovieExporter extends Exporter {
 	private final static String indexName = "beautiful-movie-team-data";
 	private final static String typeName = "movies";
-	private Node node;
-	private Client client;
-	private BulkProcessor bulkProcessor;
 
 	public MovieExporter(String clusterName) {
-		this.node = nodeBuilder()
-				.settings(Settings.builder().put("cluster.name", clusterName).put("path.home", "elasticsearch-data"))
-				.node();
-		this.client = this.node.client();
+		super(clusterName);
 	}
 
-	public void exportMovies() {
+	@Override
+	public void exportToES() {
 		MongoUtilities mongo = new MongoUtilities("movie-data", "csv_files");
 		MongoCursor<Document> cursor = mongo.getCollection().find().iterator();
 		bulkProcessor = BulkProcessor.builder(client, new BulkProcessor.Listener() {
@@ -61,16 +51,28 @@ public class MovieExporter {
 				Movie movie = new Movie(document.getInteger("movieID"), document.getString("title"),
 						document.getDouble("rating"), document.getInteger("year"));
 				insertObjAsJson(movie);
-				System.out.println("Movie #: " + ++counter + " inserted into elastic search.");
 			}
+			counter++; // our tweets are based on exactly 400 movies.
 		}
 	}
 
-	public void insertObjAsJson(Movie movie) {
-		bulkProcessor.add(new IndexRequest(indexName, typeName).source(new Gson().toJson(movie)));
+	@Override
+	public void insertObjAsJson(Object object) {
+		if (object != null && object instanceof Movie) {
+			Movie movie = (Movie) object;
+			bulkProcessor.add(new IndexRequest(indexName, typeName).source(new Gson().toJson(movie)));
+			System.out.println("Movie record inserted into elastic search.");
+		}
 	}
 
-	class Movie {
+	@Override
+	public boolean validateDocument(Document document) {
+		boolean docValid = false;
+		docValid = validateValue(document.getString("title"));
+		return docValid;
+	}
+
+	private class Movie {
 		final int movieId;
 		final String title;
 		final double rating;
@@ -78,25 +80,10 @@ public class MovieExporter {
 
 		public Movie(int movieId, String title, double rating, int year) {
 			this.movieId = movieId;
-			this.title = title.split(" ")[0]; // titles were stored as "title "
-												// in mongo
+			// titles were stored as "title " in mongo
+			this.title = title.split(" ")[0];
 			this.rating = rating;
 			this.year = year;
 		}
 	}
-
-	public boolean validateDocument(Document document) {
-		boolean docValid = false;
-		docValid = validateValue(document.getString("title"));
-		return docValid;
-	}
-
-	public boolean validateValue(String value) {
-		boolean valueValid = false;
-		if (value != null && !value.isEmpty()) {
-			valueValid = true;
-		}
-		return valueValid;
-	}
-
 }
