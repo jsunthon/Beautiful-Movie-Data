@@ -23,6 +23,7 @@ public class MovieExporter {
 	private final static String typeName = "movies";
 	private Node node;
 	private Client client;
+	private BulkProcessor bulkProcessor;
 
 	public MovieExporter(String clusterName) {
 		this.node = nodeBuilder()
@@ -30,26 +31,11 @@ public class MovieExporter {
 				.node();
 		this.client = this.node.client();
 	}
-	
+
 	public void exportMovies() {
 		MongoUtilities mongo = new MongoUtilities("movie-data", "csv_files");
 		MongoCursor<Document> cursor = mongo.getCollection().find().iterator();
-		int counter = 0;
-		
-		while (cursor.hasNext() && counter < 400) {
-			Document document = cursor.next();
-			if (validateDocument(document)) {
-				Movie movie = new Movie(document.getInteger("movieID"),
-						document.getString("title"), document.getDouble("rating"),
-						document.getInteger("year"));
-				insertObjAsJson(movie);
-				System.out.println("Movie #: " + ++counter + " inserted into elastic search.");
-			}
-		}
-	}
-	
-	public void insertObjAsJson(Movie movie) {
-		BulkProcessor bulkProcessor = BulkProcessor.builder(client, new BulkProcessor.Listener() {
+		bulkProcessor = BulkProcessor.builder(client, new BulkProcessor.Listener() {
 			@Override
 			public void beforeBulk(long executionId, BulkRequest request) {
 			}
@@ -67,10 +53,21 @@ public class MovieExporter {
 				.setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(1)
 				.setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 3)).build();
 
-		// Gson library for sending json to elastic search
-		Gson gson = new Gson();
+		int counter = 0;
 
-		bulkProcessor.add(new IndexRequest(indexName, typeName).source(gson.toJson(movie)));
+		while (cursor.hasNext() && counter < 400) {
+			Document document = cursor.next();
+			if (validateDocument(document)) {
+				Movie movie = new Movie(document.getInteger("movieID"), document.getString("title"),
+						document.getDouble("rating"), document.getInteger("year"));
+				insertObjAsJson(movie);
+				System.out.println("Movie #: " + ++counter + " inserted into elastic search.");
+			}
+		}
+	}
+
+	public void insertObjAsJson(Movie movie) {
+		bulkProcessor.add(new IndexRequest(indexName, typeName).source(new Gson().toJson(movie)));
 	}
 
 	class Movie {
@@ -78,15 +75,16 @@ public class MovieExporter {
 		final String title;
 		final double rating;
 		final int year;
-		
+
 		public Movie(int movieId, String title, double rating, int year) {
 			this.movieId = movieId;
-			this.title = title.split(" ")[0]; //titles were stored as "title " in mongo
+			this.title = title.split(" ")[0]; // titles were stored as "title "
+												// in mongo
 			this.rating = rating;
 			this.year = year;
-		}		
+		}
 	}
-	
+
 	public boolean validateDocument(Document document) {
 		boolean docValid = false;
 		docValid = validateValue(document.getString("title"));
@@ -100,5 +98,5 @@ public class MovieExporter {
 		}
 		return valueValid;
 	}
-	
+
 }
