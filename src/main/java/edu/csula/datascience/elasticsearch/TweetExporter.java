@@ -55,7 +55,7 @@ public class TweetExporter {
 		}).setBulkActions(10000).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
 				.setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(1)
 				.setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 3)).build();
-		
+
 		int counter = 0;
 
 		while (cursor.hasNext()) {
@@ -71,8 +71,7 @@ public class TweetExporter {
 	}
 
 	public void insertObjAsJson(Tweet tweet) {
-		Gson gson = new Gson();
-		bulkProcessor.add(new IndexRequest(indexName, typeName).source(gson.toJson(tweet)));
+		bulkProcessor.add(new IndexRequest(indexName, typeName).source(new Gson().toJson(tweet)));
 	}
 
 	class Tweet {
