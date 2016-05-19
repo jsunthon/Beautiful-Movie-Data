@@ -26,6 +26,7 @@ public class TweetExporter {
 	private final static String typeName = "tweets";
 	private Node node;
 	private Client client;
+	private BulkProcessor bulkProcessor;
 
 	public TweetExporter(String clusterName) {
 		this.node = nodeBuilder()
@@ -37,22 +38,7 @@ public class TweetExporter {
 	public void exportTweets() {
 		MongoUtilities mongo = new MongoUtilities("movie-data", "tweets");
 		MongoCursor<Document> cursor = mongo.getCollection().find().iterator();
-		int counter = 0;
-		
-		while (cursor.hasNext()) {
-			Document document = cursor.next();
-			if (validateDocument(document, "tweets")) {
-				Tweet tweet = new Tweet(document.getString("username"), document.getString("text"),
-						document.getInteger("favCt"), document.getInteger("retwtCt"), document.getString("date"),
-						document.getString("source"));
-				insertObjAsJson(tweet);
-				System.out.println("Tweet #: " + ++counter + " inserted into elastic search.");
-			}
-		}
-	}
-
-	public void insertObjAsJson(Tweet tweet) {
-		BulkProcessor bulkProcessor = BulkProcessor.builder(client, new BulkProcessor.Listener() {
+		bulkProcessor = BulkProcessor.builder(client, new BulkProcessor.Listener() {
 			@Override
 			public void beforeBulk(long executionId, BulkRequest request) {
 			}
@@ -69,10 +55,23 @@ public class TweetExporter {
 		}).setBulkActions(10000).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
 				.setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(1)
 				.setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 3)).build();
+		
+		int counter = 0;
 
-		// Gson library for sending json to elastic search
+		while (cursor.hasNext()) {
+			Document document = cursor.next();
+			if (validateDocument(document)) {
+				Tweet tweet = new Tweet(document.getString("username"), document.getString("text"),
+						document.getInteger("favCt"), document.getInteger("retwtCt"), document.getString("date"),
+						document.getString("source"));
+				insertObjAsJson(tweet);
+				System.out.println("Tweet #: " + ++counter + " inserted into elastic search.");
+			}
+		}
+	}
+
+	public void insertObjAsJson(Tweet tweet) {
 		Gson gson = new Gson();
-
 		bulkProcessor.add(new IndexRequest(indexName, typeName).source(gson.toJson(tweet)));
 	}
 
@@ -104,12 +103,12 @@ public class TweetExporter {
 		}
 	}
 
-	public boolean validateDocument(Document document, String type) {
+	public boolean validateDocument(Document document) {
 		boolean docValid = false;
-		if (type.equals("tweets")) {
-			docValid = (validateValue(document.getString("username")) && validateValue(document.getString("text"))
-					&& validateValue(document.getString("date")) && validateValue(document.getString("source")));
-		}
+
+		docValid = (validateValue(document.getString("username")) && validateValue(document.getString("text"))
+				&& validateValue(document.getString("date")) && validateValue(document.getString("source")));
+
 		return docValid;
 	}
 
