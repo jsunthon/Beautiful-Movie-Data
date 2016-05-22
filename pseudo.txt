@@ -1,0 +1,16 @@
+SentimentObject :{
+	movieTitle : 
+	movieRating :
+	sentimentValue : 0 #starts at 0
+}
+
+for each tweet t in total_tweets:
+	get movie m of t
+	get tweet_text text
+		if text.contains(word.inArrayList(positive.txt))
+			for each word in tweet also in positive.txt
+				SentimentObject.increaseSentimentValueBy1
+		if text.contains(word.inArrayList(negative.txt))
+			for each word in tweet also in negative.txt
+				SentimentObject.decreaseSentimentValueBy1
+
