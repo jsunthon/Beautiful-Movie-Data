@@ -9,8 +9,8 @@ for each tweet t in total_tweets:
 	get tweet_text text
 		if text.contains(word.inArrayList(positive.txt))
 			for each word in tweet also in positive.txt
-				SentimentObject.increaseSentimentValueBy1
+				m.SentimentObject.increaseSentimentValueBy1
 		if text.contains(word.inArrayList(negative.txt))
 			for each word in tweet also in negative.txt
-				SentimentObject.decreaseSentimentValueBy1
+				m.SentimentObject.decreaseSentimentValueBy1
 
