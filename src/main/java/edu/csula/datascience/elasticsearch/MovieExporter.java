@@ -53,7 +53,7 @@ public class MovieExporter extends Exporter {
 			Document document = cursor.next();
 			if (validateDocument(document)) {
 				Movie movie = new Movie(document.getInteger("movieID"), document.getString("title"),
-						"#" + document.getString("title"), document.getDouble("rating"), document.getInteger("year"));
+						document.getString("hashtagTitle"), document.getDouble("rating"), document.getInteger("year"));
 				movies.add(movie);
 				insertObjAsJson(movie);
 			}
