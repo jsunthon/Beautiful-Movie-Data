@@ -64,12 +64,10 @@ public class TweetExporter extends Exporter {
 				for (Movie movie : movies) {
 					String hashTitle = movie.hashTitle;
 					String movieTitle = movie.title;
-//					System.out.println("Search term: " + hashTitle + movieTitle + "end");
 					if (tweetTxt.contains(hashTitle) || tweetTxt.contains(movieTitle)) {
 						tweetCounter++;
 						Tweet tweet = new Tweet(document.getString("username"), document.getString("text"),
-								movieTitle, movie.rating, document.getInteger("favCt"), document.getInteger("retwtCt"),
-								document.getString("date"), document.getString("source"));
+								movieTitle, hashTitle, movie.rating, document.getString("date"));
 						tweets.add(tweet); //add a tweet
 						System.out.println("Tweet #: " + tweetCounter + " added to list; " + tweet.text) ;
 					}
@@ -82,7 +80,7 @@ public class TweetExporter extends Exporter {
 			insertTweets(tweets);
 		//insert list into insertObjAsJson method
 	}
-	
+		
 	public void insertTweets(List<Tweet> tweets) {
 		for (Tweet tweet : tweets) {
 			insertObjAsJson(tweet);
@@ -98,12 +96,12 @@ public class TweetExporter extends Exporter {
 			System.out.println("Tweet record inserted into elastic search.");
 		}
 	}
-
+	
 	@Override
 	public boolean validateDocument(Document document) {
 		boolean docValid = false;
 		docValid = (validateValue(document.getString("username")) && validateValue(document.getString("text"))
-				&& validateValue(document.getString("date")) && validateValue(document.getString("source")));
+				&& validateValue(document.getString("date")));
 
 		return docValid;
 	}
@@ -111,24 +109,21 @@ public class TweetExporter extends Exporter {
 	private class Tweet {
 		final String user;
 		final String text;
-		final String movie;
+		final String title;
+		final String hashTitle;
 		final double rating;
-		final int favCt;
-		final int retweetCt;
 		final String date;
-		final String source;
 
-		public Tweet(String user, String text, String movie, double rating, int favCt, int retweetCt, String date, String source) {
+		public Tweet(String user, String text, String title, String hashTitle,
+				double rating, String date) {
 			this.user = user;
 			this.text = text;
-			this.movie = movie;
+			this.title = title;
+			this.hashTitle = hashTitle;
 			this.rating = rating;
-			this.favCt = favCt;
-			this.retweetCt = retweetCt;
 			// Need parseDate to convert to a format of 'YY-MM-DD' for elastic
 			// search
 			this.date = parseDate(date);
-			this.source = source;
 		}
 
 		public String parseDate(String date) {
