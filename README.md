@@ -17,6 +17,6 @@
 
 #export the JSON
 * `mongoexport --db movie-data --collection tweets --out tweets.json`
-* `mongoexport --db movie-data --collection tweets --out movies.json`
+* `mongoexport --db movie-data --collection csv_files --out movies.json`
 
 
