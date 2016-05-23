@@ -59,7 +59,7 @@ public class TweetExporter extends Exporter {
 			Document document = cursor.next();
 			documentCounter++;
 			if (validateDocument(document)) {
-				System.out.println("Document #: " + documentCounter + " analyzed.");
+//				System.out.println("Document #: " + documentCounter + " analyzed.");
 				String tweetTxt = document.getString("text");
 				for (Movie movie : movies) {
 					String hashTitle = movie.hashTitle;
@@ -69,7 +69,7 @@ public class TweetExporter extends Exporter {
 						Tweet tweet = new Tweet(document.getString("username"), document.getString("text"),
 								movieTitle, hashTitle, movie.rating, document.getString("date"));
 						tweets.add(tweet); //add a tweet
-						System.out.println("Tweet #: " + tweetCounter + " added to list; " + tweet.text) ;
+						System.out.println("Tweet #: " + tweetCounter + " added to tweets list; " + tweet.text) ;
 					}
 				}
 //				insertObjAsJson(tweet);
@@ -80,14 +80,23 @@ public class TweetExporter extends Exporter {
 			insertTweets(tweets);
 		//insert list into insertObjAsJson method
 	}
-		
+	
+	/**
+	 * Takes a collection of Tweet objects and inserts each of them into elastic search.
+	 * @param tweets
+	 * 		list of tweets to be inserted
+	 */
 	public void insertTweets(List<Tweet> tweets) {
 		for (Tweet tweet : tweets) {
 			insertObjAsJson(tweet);
 		}
 		System.out.println("Tweets list size: " + tweets.size());
 	}
-
+	
+	
+	/**
+	 * Takes an object, casts it to Tweet, and inserts that Tweet as JSON into ElasticSearch
+	 */
 	@Override
 	public void insertObjAsJson(Object object) {
 		if (object != null && object instanceof Tweet) {
