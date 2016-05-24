@@ -131,7 +131,7 @@ public class TweetExporter extends Exporter {
 				}
 				if(tweetCounter != 0)
 				{
-					sentiment = (positiveCounter - negativeCounter) / tweetCounter;
+					sentiment = (double) (positiveCounter - negativeCounter) / tweetCounter;
 				}
 				System.out.println("Sentiment for movie:"+movie.getTitle()+ "is :" +sentiment);
 				movie.setSentiment(sentiment);
