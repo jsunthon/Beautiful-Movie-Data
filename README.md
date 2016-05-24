@@ -19,4 +19,8 @@
 * `mongoexport --db movie-data --collection tweets --out tweets.json`
 * `mongoexport --db movie-data --collection csv_files --out movies.json`
 
-
+#Set Path for the positive and negative text files 
+I placed the two files on the desktop and
+My path is 
+final String pathPositive = "/Users/anto004/Desktop/positive-words.txt";
+final String pathNegative = "/Users/anto004/Desktop/negative-words.txt";
