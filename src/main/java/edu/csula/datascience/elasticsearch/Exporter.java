@@ -10,7 +10,6 @@ import org.elasticsearch.common.settings.Settings;
 public abstract class Exporter {
 	protected Node node;
 	protected Client client;
-	protected BulkProcessor bulkProcessor;
 
 	public Exporter(String clusterName) {
 		this.node = nodeBuilder()
