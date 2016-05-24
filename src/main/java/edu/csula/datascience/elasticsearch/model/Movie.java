@@ -17,7 +17,7 @@ public class Movie {
 		this.rating = rating;
 		this.year = year;
 	}
-	public Movie(int movieId, String title, String hashTitle, double rating, int year, int sentiment) {
+	public Movie(int movieId, String title, String hashTitle, double rating, int year, double sentiment) {
 		this.movieId = movieId;
 		// titles were stored as "title " in mongo
 		this.title = title;
