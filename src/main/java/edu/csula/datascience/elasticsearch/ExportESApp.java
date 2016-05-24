@@ -1,7 +1,7 @@
 package edu.csula.datascience.elasticsearch;
 
 import java.util.List;
-import edu.csula.datascience.elasticsearch.MovieExporter.Movie;
+import edu.csula.datascience.elasticsearch.model.*;;
 
 public class ExportESApp {
 
