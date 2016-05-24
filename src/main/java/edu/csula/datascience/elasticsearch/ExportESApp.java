@@ -1,12 +1,13 @@
 package edu.csula.datascience.elasticsearch;
 
+import java.net.URISyntaxException;
 import java.util.List;
 import edu.csula.datascience.elasticsearch.model.*;;
 
 public class ExportESApp {
 
-	public static void main(String[] args) {
-		
+	public static void main(String[] args) throws URISyntaxException {
+
 		//pass your cluster name to the constructor
 		MovieExporter movieExp = new MovieExporter("darkserith");
 		movieExp.exportToES();

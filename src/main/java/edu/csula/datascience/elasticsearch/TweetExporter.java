@@ -1,6 +1,7 @@
 package edu.csula.datascience.elasticsearch;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
@@ -80,30 +81,30 @@ public class TweetExporter extends Exporter {
 			}
 		}
 		
-		if (tweets.size() != 0)
-			insertTweets(tweets);
+		if (tweets.size() != 0) {
+			addSentimentForMovie();
+		}
 		//insert list into insertObjAsJson method
 	}
 	
-	/**
-	 * Takes a collection of Tweet objects and inserts each of them into elastic search.
-	 * @param tweets
-	 * 		list of tweets to be inserted
-	 */
-	public void insertTweets(List<Tweet> tweets) {
-		for (Tweet tweet : tweets) {
-			insertObjAsJson(tweet);
-		}
-		System.out.println("Tweets list size: " + tweets.size());
-	}
+//	/**
+//	 * Takes a collection of Tweet objects and inserts each of them into elastic search.
+//	 * @param tweets
+//	 * 		list of tweets to be inserted
+//	 */
+//	public void insertTweets(List<Tweet> tweets) {
+//		for (Tweet tweet : tweets) {
+//			insertObjAsJson(tweet);
+//		}
+//		System.out.println("Tweets list size: " + tweets.size());
+//	}
 	
 	public void addSentimentForMovie()
 	{
-		 final String pathPositive = "/Users/anto004/Desktop/positive-words.txt";
-		 final String pathNegative = "/Users/anto004/Desktop/negative-words.txt";
+
 		 try {
-			List<String> positiveWords = Files.readAllLines(Paths.get(pathPositive));
-			List<String> negativeWords = Files.readAllLines(Paths.get(pathNegative));
+			List<String> positiveWords = Files.readAllLines(Paths.get(ClassLoader.getSystemResource("positive-words.txt").toURI()));
+			List<String> negativeWords = Files.readAllLines(Paths.get(ClassLoader.getSystemResource("negative-words.txt").toURI()));
 		
 			for(Movie movie: movies)
 			{
@@ -131,7 +132,7 @@ public class TweetExporter extends Exporter {
 				movie.setSentiment(sentiment);
 			}
 			
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}
