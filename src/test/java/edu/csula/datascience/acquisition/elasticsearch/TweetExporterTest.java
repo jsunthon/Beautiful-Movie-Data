@@ -29,5 +29,10 @@ public class TweetExporterTest {
 		assertTrue(positiveWords.size() > 0 && negativeWords.size() > 0);
 		assertEquals("a+", positiveWords.get(0));
 		assertEquals("2-faced", negativeWords.get(0));
+		
+		double sentiment = 0;
+		
+		sentiment = (double) 300 / 1000;
+		System.out.println(sentiment);
 	}
 }
