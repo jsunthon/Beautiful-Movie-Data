@@ -16,6 +16,5 @@ public class ExportESApp {
 		//pass in your cluster name to the constructor
 		TweetExporter tweetExp = new TweetExporter("darkserith", movies);
 		tweetExp.exportToES();
-		tweetExp.addSentimentForMovie();
 	}	
 }

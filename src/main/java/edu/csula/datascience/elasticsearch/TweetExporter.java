@@ -101,7 +101,6 @@ public class TweetExporter extends Exporter {
 	
 	public void addSentimentForMovie()
 	{
-
 		 try {
 			List<String> positiveWords = Files.readAllLines(Paths.get(ClassLoader.getSystemResource("positive-words.txt").toURI()));
 			List<String> negativeWords = Files.readAllLines(Paths.get(ClassLoader.getSystemResource("negative-words.txt").toURI()));
@@ -111,23 +110,29 @@ public class TweetExporter extends Exporter {
 				int positiveCounter = 0;
 				int negativeCounter = 0;
 				int tweetCounter = 0;
+				int sentiment = 0;
 				for(Tweet tweet: tweets){
 					if(tweet.title.equals(movie.getTitle()))
 					{
 						tweetCounter++;
 						for(String positiveWord: positiveWords)
 						{
-							if(tweet.text.contains(positiveWord));
-							positiveCounter++;
+							if(tweet.text.contains(positiveWord)){
+								positiveCounter++;
+							}
 						}
 						for(String negativeWord: negativeWords)
 						{
-							if(tweet.text.contains(negativeWord));
-							negativeCounter++;
+							if(tweet.text.contains(negativeWord)){
+								negativeCounter++;
+							}
 						}
 					}	
 				}
-				int sentiment = (positiveCounter - negativeCounter) / tweetCounter;
+				if(tweetCounter != 0)
+				{
+					sentiment = (positiveCounter - negativeCounter) / tweetCounter;
+				}
 				System.out.println("Sentiment for movie:"+movie.getTitle()+ "is :" +sentiment);
 				movie.setSentiment(sentiment);
 			}
