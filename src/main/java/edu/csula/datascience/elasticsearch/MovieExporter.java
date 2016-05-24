@@ -14,6 +14,8 @@ import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import com.google.gson.Gson;
 import com.mongodb.client.MongoCursor;
+
+import edu.csula.datascience.elasticsearch.model.Movie;
 import edu.csula.datascience.utilities.MongoUtilities;
 
 public class MovieExporter extends Exporter {
@@ -75,23 +77,6 @@ public class MovieExporter extends Exporter {
 		boolean docValid = false;
 		docValid = validateValue(document.getString("title"));
 		return docValid;
-	}
-	
-	static class Movie {
-		final int movieId;
-		final String title;
-		final String hashTitle;
-		final double rating;
-		final int year;
-
-		public Movie(int movieId, String title, String hashTitle, double rating, int year) {
-			this.movieId = movieId;
-			// titles were stored as "title " in mongo
-			this.title = title;
-			this.hashTitle = hashTitle;
-			this.rating = rating;
-			this.year = year;
-		}
 	}
 	
 	public List<Movie> getMovies() {

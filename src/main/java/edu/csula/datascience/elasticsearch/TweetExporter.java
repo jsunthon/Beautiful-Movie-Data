@@ -1,7 +1,10 @@
 package edu.csula.datascience.elasticsearch;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
-import edu.csula.datascience.elasticsearch.MovieExporter.Movie;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +20,8 @@ import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import com.google.gson.Gson;
 import com.mongodb.client.MongoCursor;
+
+import edu.csula.datascience.elasticsearch.model.Movie;
 import edu.csula.datascience.utilities.MongoUtilities;
 
 public class TweetExporter extends Exporter {
@@ -62,12 +67,12 @@ public class TweetExporter extends Exporter {
 //				System.out.println("Document #: " + documentCounter + " analyzed.");
 				String tweetTxt = document.getString("text");
 				for (Movie movie : movies) {
-					String hashTitle = movie.hashTitle;
-					String movieTitle = movie.title;
+					String hashTitle = movie.getHashTitle();
+					String movieTitle = movie.getTitle();
 					if (tweetTxt.contains(hashTitle) || tweetTxt.contains(movieTitle)) {
 						tweetCounter++;
 						Tweet tweet = new Tweet(document.getString("username"), document.getString("text"),
-								movieTitle, hashTitle, movie.rating, document.getString("date"));
+								movieTitle, hashTitle, movie.getRating(), document.getString("date"));
 						tweets.add(tweet); //add a tweet
 						System.out.println("Tweet #: " + tweetCounter + " added to tweets list; " + tweet.text) ;
 					}
@@ -76,23 +81,66 @@ public class TweetExporter extends Exporter {
 			}
 		}
 		
-		if (tweets.size() != 0)
-			insertTweets(tweets);
+		if (tweets.size() != 0) {
+			addSentimentForMovie();
+		}
 		//insert list into insertObjAsJson method
 	}
 	
-	/**
-	 * Takes a collection of Tweet objects and inserts each of them into elastic search.
-	 * @param tweets
-	 * 		list of tweets to be inserted
-	 */
-	public void insertTweets(List<Tweet> tweets) {
-		for (Tweet tweet : tweets) {
-			insertObjAsJson(tweet);
-		}
-		System.out.println("Tweets list size: " + tweets.size());
-	}
+//	/**
+//	 * Takes a collection of Tweet objects and inserts each of them into elastic search.
+//	 * @param tweets
+//	 * 		list of tweets to be inserted
+//	 */
+//	public void insertTweets(List<Tweet> tweets) {
+//		for (Tweet tweet : tweets) {
+//			insertObjAsJson(tweet);
+//		}
+//		System.out.println("Tweets list size: " + tweets.size());
+//	}
 	
+	public void addSentimentForMovie()
+	{
+		 try {
+			List<String> positiveWords = Files.readAllLines(Paths.get(ClassLoader.getSystemResource("positive-words.txt").toURI()));
+			List<String> negativeWords = Files.readAllLines(Paths.get(ClassLoader.getSystemResource("negative-words.txt").toURI()));
+		
+			for(Movie movie: movies)
+			{
+				int positiveCounter = 0;
+				int negativeCounter = 0;
+				int tweetCounter = 0;
+				double sentiment = 0.0;
+				for(Tweet tweet: tweets){
+					if(tweet.title.equals(movie.getTitle()))
+					{
+						tweetCounter++;
+						for(String positiveWord: positiveWords)
+						{
+							if(tweet.text.contains(positiveWord)){
+								positiveCounter++;
+							}
+						}
+						for(String negativeWord: negativeWords)
+						{
+							if(tweet.text.contains(negativeWord)){
+								negativeCounter++;
+							}
+						}
+					}	
+				}
+				if(tweetCounter != 0)
+				{
+					sentiment = (double) (positiveCounter - negativeCounter) / tweetCounter;
+				}
+				System.out.println("Sentiment for movie:"+movie.getTitle()+ "is :" +sentiment);
+				movie.setSentiment(sentiment);
+			}
+			
+		} catch (IOException | URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * Takes an object, casts it to Tweet, and inserts that Tweet as JSON into ElasticSearch
