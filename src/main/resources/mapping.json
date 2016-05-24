@@ -1,39 +1,26 @@
+#remove the index
 DELETE beautiful-movie-team-data
 
-#create mapping
-PUT /beautiful-movie-team-data
+#put mapping of the type movies
+PUT beautiful-movie-team-data
 {
-    "mappings" : {
+   "mappings" : {
         "movies" : {
             "properties" : {
                 "title" : {
                     "type" : "string",
                     "index" : "not_analyzed"
+                },
+                "year" : {
+                  "type" : "date"
                 }
             }
-        },
-        "tweets" : {
-          "properties": {
-            "text" : {
-              "type" : "string",
-              "index" : "not_analyzed"
-            },
-          "date": {
-            "type": "date"
-          }
         }
-      }
-    }
+   }
 }
 
 #get movies mapping
 GET beautiful-movie-team-data/movies/_mapping
 
-#get tweets mapping
-GET beautiful-movie-team-data/tweets/_mapping
-
 #search for movies
 GET beautiful-movie-team-data/movies/_search
-
-#search for tweets
-GET beautiful-movie-team-data/tweets/_search
