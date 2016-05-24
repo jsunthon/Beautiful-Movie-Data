@@ -20,7 +20,6 @@ import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import com.google.gson.Gson;
 import com.mongodb.client.MongoCursor;
-
 import edu.csula.datascience.elasticsearch.model.Movie;
 import edu.csula.datascience.utilities.MongoUtilities;
 
@@ -84,16 +83,19 @@ public class MovieExporter extends Exporter {
 				for(Tweet tweet: tweets){
 					if(tweet.title.equals(movie.getTitle()))
 					{
+						String []tweetArray = tweet.text.split("\\s");
 						tweetCounter++;
 						for(String positiveWord: positiveWords)
 						{
-							if(tweet.text.contains(positiveWord)){
+							for(int i=0; i<tweetArray.length; i++)
+							if(tweetArray[i].contains(positiveWord)){
 								positiveCounter++;
 							}
 						}
 						for(String negativeWord: negativeWords)
 						{
-							if(tweet.text.contains(negativeWord)){
+							for(int i=0; i<tweetArray.length; i++)
+							if(tweetArray[i].contains(negativeWord)){
 								negativeCounter++;
 							}
 						}
@@ -103,7 +105,11 @@ public class MovieExporter extends Exporter {
 				{
 					sentiment = (double) (positiveCounter - negativeCounter) / tweetCounter;
 				}
+				System.out.println("Number of tweets for movie:"+movie.getTitle()+" is "+tweetCounter);
+				System.out.println("Number of Positive words of tweets for movie:"+movie.getTitle()+" is "+positiveCounter);
+				System.out.println("Number of Negative words of tweets for movie:"+movie.getTitle()+" is "+negativeCounter);
 				System.out.println("Sentiment for movie:"+movie.getTitle()+ "is :" +sentiment);
+				
 				movie.setSentiment(sentiment);
 			}
 			
