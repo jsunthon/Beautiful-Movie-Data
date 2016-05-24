@@ -110,7 +110,7 @@ public class TweetExporter extends Exporter {
 				int positiveCounter = 0;
 				int negativeCounter = 0;
 				int tweetCounter = 0;
-				int sentiment = 0;
+				double sentiment = 0.0;
 				for(Tweet tweet: tweets){
 					if(tweet.title.equals(movie.getTitle()))
 					{

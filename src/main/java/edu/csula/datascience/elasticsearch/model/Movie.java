@@ -7,7 +7,7 @@ public class Movie {
     private String hashTitle;
 	private double rating;
 	private int year;
-	private int sentiment;
+	private double sentiment;
 
 	public Movie(int movieId, String title, String hashTitle, double rating, int year) {
 		this.movieId = movieId;
@@ -56,10 +56,10 @@ public class Movie {
 	public void setYear(int year) {
 		this.year = year;
 	}
-	public int getSentiment() {
+	public double getSentiment() {
 		return sentiment;
 	}
-	public void setSentiment(int sentiment) {
+	public void setSentiment(double sentiment) {
 		this.sentiment = sentiment;
 	}
 	
