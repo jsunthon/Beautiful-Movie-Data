@@ -34,6 +34,12 @@ public class MovieExporterTest {
 	public void testExport() {
 		exporter.exportMovies(mockMovies);
 	}
+	
+	@Test
+	public void testMovie() {
+		String testStr = "Hello Love Me Not...";
+		assertEquals(true, testStr.contains("#Love ") || testStr.contains("Love "));
+	}
 		
 	@SuppressWarnings("deprecation")
 	@Test

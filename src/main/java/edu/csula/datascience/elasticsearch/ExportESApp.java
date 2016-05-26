@@ -8,7 +8,6 @@ public class ExportESApp {
 
 	public static void main(String[] args) throws URISyntaxException {
 
-		//pass your cluster name to the constructor
 		MongoMovieImporter movieImporter = new MongoMovieImporter();
 		movieImporter.importMovies();
 		List<Movie> movies = movieImporter.getMovies();
