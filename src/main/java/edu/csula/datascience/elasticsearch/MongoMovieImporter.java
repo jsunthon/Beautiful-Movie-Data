@@ -14,9 +14,7 @@ public class MongoMovieImporter {
 	public void importMovies() {
 		MongoUtilities mongo = new MongoUtilities("movie-data", "csv_files");
 		MongoCursor<Document> cursor = mongo.getCollection().find().iterator();
-
 		int counter = 0;
-
 		while (cursor.hasNext() && counter < 400) {
 			Document document = cursor.next();
 			if (validateDocument(document)) {
@@ -24,7 +22,7 @@ public class MongoMovieImporter {
 						document.getString("hashtagTitle"), document.getDouble("rating"), document.getInteger("year"));
 				movies.add(movie);
 			}
-			counter++; // our tweets are based on exactly 400 movies.
+			counter++;
 		}
 	}
 
