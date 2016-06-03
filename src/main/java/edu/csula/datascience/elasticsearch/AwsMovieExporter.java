@@ -36,6 +36,7 @@ public class AwsMovieExporter {
 	public AwsMovieExporter(List<Movie> movies, String awsAddress) {
 		this.movies = movies;
 		this.awsAddress = awsAddress;
+		this.factory = new JestClientFactory();
 		this.factory.setHttpClientConfig(new HttpClientConfig
 	            .Builder(awsAddress)
 	            .multiThreaded(true)
