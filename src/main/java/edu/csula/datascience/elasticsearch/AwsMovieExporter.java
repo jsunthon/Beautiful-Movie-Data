@@ -1,5 +1,6 @@
 package edu.csula.datascience.elasticsearch;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -9,8 +10,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bson.Document;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import com.mongodb.client.MongoCursor;
 
 import edu.csula.datascience.elasticsearch.model.Movie;
@@ -45,6 +49,32 @@ public class AwsMovieExporter {
 	}
 	
 	public void exportToAwsES() {
+		getRelevantTweets();
+		exportMoviesAWS(movies);
+	}
+	
+	public void exportMovieDataToJsonFile() throws IOException {
+		getRelevantTweets();
+		
+		//at this pt, we have the movie data we want. output to json.
+		JSONObject obj = new JSONObject();
+		obj.put("Name", "Movies JSON");
+ 
+		JSONArray moviesJsonArr = new JSONArray();
+		for (Movie movie : movies) {
+			moviesJsonArr.add(new Gson().toJson(movie));
+		}
+		obj.put("Movies", moviesJsonArr);
+ 
+		// try-with-resources statement based on post comment below :)
+		try (FileWriter file = new FileWriter("/Users/James/Documents/movies.json")) {
+			file.write(obj.toJSONString());
+			System.out.println("Successfully Copied JSON Object to File...");
+			System.out.println("\nJSON Object: " + obj);
+		}
+	}
+	
+	public void getRelevantTweets() {
 		int tweetCounter = 0;
 		MongoUtilities mongo = new MongoUtilities("movie-data", "tweets");
 		MongoCursor<Document> cursor = mongo.getCollection().find().iterator();
@@ -69,11 +99,10 @@ public class AwsMovieExporter {
 		
 		if (tweets.size() != 0) {
 			addSentimentForMovie();
-			exportMovies(movies); //at this pt, we have our final list of movie objs.
 		}
 	}
 	
-	public void exportMovies(List<Movie> movies) {
+	public void exportMoviesAWS(List<Movie> movies) {
         try {
             Collection<BulkableAction> actions = Lists.newArrayList();
             movies.stream()

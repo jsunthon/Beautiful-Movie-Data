@@ -1,5 +1,6 @@
 package edu.csula.datascience.elasticsearch;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import edu.csula.datascience.elasticsearch.model.*;;
@@ -19,6 +20,11 @@ public class ExportESApp {
 		
 		String awsAddress = "http://search-beautiful-movie-team-data-dead4tatemoould2advqkyrbni.us-west-2.es.amazonaws.com/";
 		AwsMovieExporter awsMovieExp = new AwsMovieExporter(movies, awsAddress);
-		awsMovieExp.exportToAwsES();
+//		awsMovieExp.exportToAwsES();
+		try {
+			awsMovieExp.exportMovieDataToJsonFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}	
 }
