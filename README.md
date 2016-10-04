@@ -1,15 +1,5 @@
-#BigDataGroup
-
-#Starting the collector
-* Run CollectorApp.java
-
-#Creating a branch
-* `git checkout homework_3`
-* `git pull` //make sure you have most up-to-date homework_3
-* `git branch yourBranch`
-* `git push origin yourBranch` //this is used to put your new local branch onto github.com repo
-* `git checkout yourBranch`
-* `git branch` //do this to make sure you're on your new branch
+#Beautiful Movie Data
+This project is composed of a collector and an exporter. The collector's job is to use Twitter streams involving the use of movie titles. This data is stored into MongoDB. The exporter exports it to Amazon Web Service's elastic search to perform visual analysis. Results also visualized through JavaScript here: https://beautiful-movie-team.firebaseapp.com/.
 
 #import the JSON into mongo
 * `mongoimport --db movie-data --collection tweets --file tweets.json`
